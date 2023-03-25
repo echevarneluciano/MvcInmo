@@ -1,0 +1,18 @@
+﻿@model List<Persona>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenido a mi sitio</h1>
+</div>
+@if(Model.Count != 0){
+<ul>
+    @foreach (var item in Model)
+    {
+      <li>Nombre: @item.Nombre (@item.Telefono)</li>  
+    } 
+</ul>
+}else{
+    <h2>No hay personas</h2>
+}
