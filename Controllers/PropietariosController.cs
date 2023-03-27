@@ -9,17 +9,24 @@ namespace MvcInmo.Controllers
 {
     public class PropietariosController : Controller
     {
+        private readonly RepositorioPropietario reProp;
 
+        public PropietariosController()
+        {
+            reProp = new RepositorioPropietario();
+        }
         // GET: Propietarios
         public ActionResult Index()
         {
-            return View();
+            var lista = reProp.GetPropietarios();
+            return View(lista);
         }
 
         // GET: Propietarios/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var propietario = reProp.GetPropietario(id);
+            return View(propietario);
         }
 
         // GET: Propietarios/Create
@@ -31,12 +38,13 @@ namespace MvcInmo.Controllers
         // POST: Propietarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Propietario propietario)
         {
+
             try
             {
                 // TODO: Add insert logic here
-
+                reProp.Alta(propietario);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -48,41 +56,50 @@ namespace MvcInmo.Controllers
         // GET: Propietarios/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var prop = reProp.GetPropietario(id);
+            return View(prop);
         }
 
         // POST: Propietarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Propietario collection) //, Propietario collection
         {
+            Propietario p = new Propietario();
             try
             {
-                // TODO: Add update logic here
-
+                p = reProp.GetPropietario(id);
+                p.Nombre = collection.Nombre;
+                p.Apellido = collection.Apellido;
+                p.DNI = collection.DNI;
+                p.Telefono = collection.Telefono;
+                reProp.Modificacion(p);
+                TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
+            catch (Exception ex)
+            {//poner breakpoints para detectar errores
+                throw;
             }
         }
 
         // GET: Propietarios/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var prop = reProp.GetPropietario(id);
+            return View(prop);
         }
 
         // POST: Propietarios/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Eliminar(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                reProp.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch

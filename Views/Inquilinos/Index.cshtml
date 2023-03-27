@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DNI)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -43,9 +46,12 @@
                 @Html.DisplayFor(modelItem => item.DNI)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.id */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.id */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.id */ })
+                @Html.DisplayFor(modelItem => item.Telefono)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id  }) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new {  id=item.Id  })
             </td>
         </tr>
 }

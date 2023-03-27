@@ -9,16 +9,24 @@ namespace MvcInmo.Controllers
 {
     public class InquilinosController : Controller
     {
+        private readonly RepositorioInquilino reInq;
+
+        public InquilinosController()
+        {
+            reInq = new RepositorioInquilino();
+        }
         // GET: Inquilinos
         public ActionResult Index()
         {
-            return View();
+            var lista = reInq.GetInquilinos();
+            return View(lista);
         }
 
         // GET: Inquilinos/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var inquilino = reInq.GetInquilino(id);
+            return View(inquilino);
         }
 
         // GET: Inquilinos/Create
@@ -35,8 +43,7 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add insert logic here
-                //  var repo = new InquilinoRepository();
-                // repo.Alta(inquilino);
+                reInq.Alta(inquilino);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -48,18 +55,25 @@ namespace MvcInmo.Controllers
         // GET: Inquilinos/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var inquilino = reInq.GetInquilino(id);
+            return View(inquilino);
         }
 
         // POST: Inquilinos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Inquilino collection)
         {
+            Inquilino i = new Inquilino();
             try
             {
-                // TODO: Add update logic here
-
+                i = reInq.GetInquilino(id);
+                i.Nombre = collection.Nombre;
+                i.Apellido = collection.Apellido;
+                i.DNI = collection.DNI;
+                i.Telefono = collection.Telefono;
+                reInq.Modificacion(i);
+                TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -71,18 +85,19 @@ namespace MvcInmo.Controllers
         // GET: Inquilinos/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var inq = reInq.GetInquilino(id);
+            return View(inq);
         }
 
         // POST: Inquilinos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Eliminar(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                reInq.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
