@@ -5,45 +5,46 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
+
 namespace MvcInmo.Controllers
 {
-    public class InquilinosController : Controller
+    public class InmueblesController : Controller
     {
-        private readonly RepositorioInquilino reInq;
-
-        public InquilinosController()
+        // GET: Inmuebles
+        private RepositorioInmueble repositorioInmueble;
+        private RepositorioPropietario repositorioPropietario;
+        public InmueblesController()
         {
-            reInq = new RepositorioInquilino();
+            repositorioInmueble = new RepositorioInmueble();
+            repositorioPropietario = new RepositorioPropietario();
         }
-        // GET: Inquilinos
         public ActionResult Index()
         {
-            var lista = reInq.GetInquilinos();
+            var lista = repositorioInmueble.GetInmuebles();
             return View(lista);
         }
 
-        // GET: Inquilinos/Details/5
+        // GET: Inmuebles/Details/5
         public ActionResult Details(int id)
         {
-            var inquilino = reInq.GetInquilino(id);
-            return View(inquilino);
+            return View();
         }
 
-        // GET: Inquilinos/Create
+        // GET: Inmuebles/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Inquilinos/Create
+        // POST: Inmuebles/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inquilino inquilino)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
                 // TODO: Add insert logic here
-                reInq.Alta(inquilino);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -52,29 +53,21 @@ namespace MvcInmo.Controllers
             }
         }
 
-        // GET: Inquilinos/Edit/5
+        // GET: Inmuebles/Edit/5
         public ActionResult Edit(int id)
         {
-            var inquilino = reInq.GetInquilino(id);
-            return View(inquilino);
+            return View();
         }
 
-        // POST: Inquilinos/Edit/5
+        // POST: Inmuebles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Inquilino collection)
+        public ActionResult Edit(int id, IFormCollection collection)
         {
-            Inquilino i = new Inquilino();
             try
             {
-                i = reInq.GetInquilino(id);
-                i.Nombre = collection.Nombre;
-                i.Apellido = collection.Apellido;
-                i.DNI = collection.DNI;
-                i.Telefono = collection.Telefono;
-                i.Email = collection.Email;
-                reInq.Modificacion(i);
-                TempData["Mensaje"] = "Datos guardados correctamente";
+                // TODO: Add update logic here
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -83,22 +76,21 @@ namespace MvcInmo.Controllers
             }
         }
 
-        // GET: Inquilinos/Delete/5
+        // GET: Inmuebles/Delete/5
         public ActionResult Delete(int id)
         {
-            var inq = reInq.GetInquilino(id);
-            return View(inq);
+            return View();
         }
 
-        // POST: Inquilinos/Delete/5
+        // POST: Inmuebles/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Eliminar(int id)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
                 // TODO: Add delete logic here
-                reInq.Baja(id);
+
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -73,6 +73,7 @@ namespace MvcInmo.Controllers
                 p.Apellido = collection.Apellido;
                 p.DNI = collection.DNI;
                 p.Telefono = collection.Telefono;
+                p.Email = collection.Email;
                 reProp.Modificacion(p);
                 TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));

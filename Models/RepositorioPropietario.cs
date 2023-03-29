@@ -14,7 +14,7 @@ public class RepositorioPropietario
         List<Propietario> propietarios = new List<Propietario>();
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = @"SELECT Id, Nombre, Apellido, DNI, Telefono FROM propietarios";
+            var query = @"SELECT Id, Nombre, Apellido, DNI, Telefono, Email FROM propietarios";
             using (var command = new MySqlCommand(query, connection))
             {
                 connection.Open();
@@ -29,6 +29,7 @@ public class RepositorioPropietario
                             Apellido = reader.GetString(nameof(Propietario.Apellido)),
                             DNI = reader.GetString(nameof(Propietario.DNI)),
                             Telefono = reader.GetString(nameof(Propietario.Telefono)),
+                            Email = reader.GetString(nameof(Propietario.Email)),
                         };
                         propietarios.Add(propietario);
                     }
@@ -44,8 +45,8 @@ public class RepositorioPropietario
         int res = 0;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            string query = @"INSERT INTO propietarios (Nombre, Apellido, DNI, Telefono)
-            VALUES (@Nombre, @Apellido, @DNI, @Telefono);
+            string query = @"INSERT INTO propietarios (Nombre, Apellido, DNI, Telefono, Email)
+            VALUES (@Nombre, @Apellido, @DNI, @Telefono, @Email);
             SELECT LAST_INSERT_ID();";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
@@ -53,6 +54,7 @@ public class RepositorioPropietario
                 command.Parameters.AddWithValue("@Apellido", Propietario.Apellido);
                 command.Parameters.AddWithValue("@DNI", Propietario.DNI);
                 command.Parameters.AddWithValue("@Telefono", Propietario.Telefono);
+                command.Parameters.AddWithValue("@Email", Propietario.Email);
                 connection.Open();
                 res = Convert.ToInt32(command.ExecuteScalar());
                 Propietario.Id = res;
@@ -67,7 +69,7 @@ public class RepositorioPropietario
         Propietario p = null;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            string query = @"SELECT Id, Nombre, Apellido, Dni, Telefono 
+            string query = @"SELECT Id, Nombre, Apellido, Dni, Telefono, Email  
 					FROM Propietarios
 					WHERE Id=@id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -85,6 +87,7 @@ public class RepositorioPropietario
                         Apellido = reader.GetString("Apellido"),
                         DNI = reader.GetString("DNI"),
                         Telefono = reader.GetString("Telefono"),
+                        Email = reader.GetString("Email"),
                     };
                 }
                 connection.Close();
@@ -99,7 +102,7 @@ public class RepositorioPropietario
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             string query = @"UPDATE Propietarios 
-					SET Nombre=@nombre, Apellido=@apellido, DNI=@DNI, Telefono=@telefono
+					SET Nombre=@nombre, Apellido=@apellido, DNI=@DNI, Telefono=@telefono, Email=@email 
 					WHERE Id = @id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
@@ -109,6 +112,7 @@ public class RepositorioPropietario
                 command.Parameters.AddWithValue("@DNI", p.DNI);
                 command.Parameters.AddWithValue("@telefono", p.Telefono);
                 command.Parameters.AddWithValue("@id", p.Id);
+                command.Parameters.AddWithValue("@email", p.Email);
                 connection.Open();
                 res = command.ExecuteNonQuery();
                 connection.Close();

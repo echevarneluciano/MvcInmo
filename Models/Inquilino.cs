@@ -7,12 +7,18 @@ public class Inquilino
     public string? Apellido { get; set; }
     public string? DNI { get; set; }
     public string? Telefono { get; set; }
-    public Inquilino(string Nombre, string Apellido, string DNI, string Telefono)
+    public string? Email { get; set; }
+    public Inquilino(string Nombre, string Apellido, string DNI, string Telefono, string Email)
     {
         this.Nombre = Nombre;
         this.Apellido = Apellido;
         this.DNI = DNI;
         this.Telefono = Telefono;
+        this.Email = Email;
     }
     public Inquilino() { }
+    public override string ToString()
+    {
+        return $"{Nombre} {Apellido}";
+    }
 }
