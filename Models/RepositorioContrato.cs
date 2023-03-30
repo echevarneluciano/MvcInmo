@@ -15,12 +15,14 @@ public class RepositorioContrato
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             var query = @"SELECT c.Id, FechaInicio, FechaFin, Precio, InquilinoId, InmuebleId, 
-            i.Nombre, i.Apellido, m.Tipo, m.PropietarioId  
+            i.Nombre, i.Apellido, m.Tipo, m.PropietarioId, p.Nombre, p.Apellido  
             FROM Contratos c 
             INNER JOIN Inquilinos i
 				ON  c.InquilinoId = i.Id
             INNER JOIN inmuebles m 
-				ON  c.InmuebleId = m.Id";
+				ON  c.InmuebleId = m.Id
+            INNER JOIN propietarios p    
+                ON m.PropietarioId = p.Id;";
             using (var command = new MySqlCommand(query, connection))
             {
                 connection.Open();
@@ -47,6 +49,12 @@ public class RepositorioContrato
                                 Id = reader.GetInt32(5),
                                 Tipo = reader.GetString(8),
                                 PropietarioId = reader.GetInt32(9),
+                            },
+                            propietario = new Propietario
+                            {
+                                Id = reader.GetInt32(9),
+                                Nombre = reader.GetString(10),
+                                Apellido = reader.GetString(11),
                             }
                         };
                         Contratos.Add(Contrato);

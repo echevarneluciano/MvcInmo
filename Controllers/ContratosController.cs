@@ -13,11 +13,14 @@ namespace MvcInmo.Controllers
         private RepositorioInmueble repositorioInmueble;
         private RepositorioInquilino repositorioInquilino;
         private RepositorioContrato repositorioContrato;
+        private RepositorioPropietario repositorioPropietario;
         public ContratosController()
         {
             repositorioInmueble = new RepositorioInmueble();
             repositorioContrato = new RepositorioContrato();
             repositorioInquilino = new RepositorioInquilino();
+            repositorioPropietario = new RepositorioPropietario();
+
         }
         // GET: Contratos
         public ActionResult Index()
@@ -35,18 +38,20 @@ namespace MvcInmo.Controllers
         // GET: Contratos/Create
         public ActionResult Create()
         {
+            ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
+            ViewBag.Inmuebles = repositorioInmueble.GetInmuebles();
             return View();
         }
 
         // POST: Contratos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Contrato collection)
         {
             try
             {
                 // TODO: Add insert logic here
-
+                repositorioContrato.Alta(collection);
                 return RedirectToAction(nameof(Index));
             }
             catch
