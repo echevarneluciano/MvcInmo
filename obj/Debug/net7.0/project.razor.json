@@ -18665,6 +18665,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Contratos\\Details.cshtml",
+      "TargetPath": "Views\\Contratos\\Details.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Propietarios\\Edit.cshtml",
       "TargetPath": "Views\\Propietarios\\Edit.cshtml",
       "FileKind": "mvc"
@@ -18675,8 +18680,18 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Contratos\\Delete.cshtml",
+      "TargetPath": "Views\\Contratos\\Delete.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Inmuebles\\Delete.cshtml",
       "TargetPath": "Views\\Inmuebles\\Delete.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Contratos\\Edit.cshtml",
+      "TargetPath": "Views\\Contratos\\Edit.cshtml",
       "FileKind": "mvc"
     },
     {
@@ -18705,6 +18720,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Contratos\\Create.cshtml",
+      "TargetPath": "Views\\Contratos\\Create.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\_ViewStart.cshtml",
       "TargetPath": "Views\\_ViewStart.cshtml",
       "FileKind": "mvc"
@@ -18717,6 +18737,11 @@
     {
       "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Home\\Ver.cshtml",
       "TargetPath": "Views\\Home\\Ver.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\luciano.echevarne\\Desktop\\UN\\puntoNet\\Inmobiliaria\\MvcInmo\\Views\\Contratos\\Index.cshtml",
+      "TargetPath": "Views\\Contratos\\Index.cshtml",
       "FileKind": "mvc"
     },
     {

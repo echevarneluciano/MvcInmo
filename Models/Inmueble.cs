@@ -12,6 +12,7 @@ public class Inmueble
     public int Superficie { get; set; }
     public decimal Latitud { get; set; }
     public decimal Longitud { get; set; }
+    public string? Tipo { get; set; }
     public int PropietarioId { get; set; }
     [ForeignKey(nameof(PropietarioId))]
     public Propietario Duenio { get; set; }

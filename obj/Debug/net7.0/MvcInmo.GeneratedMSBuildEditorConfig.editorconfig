@@ -16,6 +16,26 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\luciano.echevarne\Desktop\UN\puntoNet\Inmobiliaria\MvcInmo
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/luciano.echevarne/Desktop/UN/puntoNet/Inmobiliaria/MvcInmo/Views/Contratos/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhdG9zXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/luciano.echevarne/Desktop/UN/puntoNet/Inmobiliaria/MvcInmo/Views/Contratos/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhdG9zXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/luciano.echevarne/Desktop/UN/puntoNet/Inmobiliaria/MvcInmo/Views/Contratos/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhdG9zXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/luciano.echevarne/Desktop/UN/puntoNet/Inmobiliaria/MvcInmo/Views/Contratos/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhdG9zXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/luciano.echevarne/Desktop/UN/puntoNet/Inmobiliaria/MvcInmo/Views/Contratos/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udHJhdG9zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/luciano.echevarne/Desktop/UN/puntoNet/Inmobiliaria/MvcInmo/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
