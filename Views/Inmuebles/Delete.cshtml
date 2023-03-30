@@ -48,14 +48,14 @@
             @Html.DisplayFor(model => model.Longitud)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PropietarioId)
+            Propietario
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PropietarioId)
+            @Model.Duenio.ToString()
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Eliminar" method="post" asp-route-id=@Model.Id >
         <input type="submit" value="Eliminar" class="btn btn-danger" /> |
         <a asp-action="Index">Volver</a>
     </form>

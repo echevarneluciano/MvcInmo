@@ -21,42 +21,62 @@ namespace MvcInmo.Controllers
         public ActionResult Index()
         {
             var lista = repositorioInmueble.GetInmuebles();
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
         }
 
         // GET: Inmuebles/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var inmueble = repositorioInmueble.GetInmueble(id);
+            return View(inmueble);
         }
 
         // GET: Inmuebles/Create
         public ActionResult Create()
         {
-            return View();
+            try
+            {
+                ViewBag.Propietarios = repositorioPropietario.GetPropietarios();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         // POST: Inmuebles/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Inmueble entidad)
         {
             try
             {
-                // TODO: Add insert logic here
-
+                ViewBag.Propietarios = repositorioPropietario.GetPropietarios();
+                repositorioInmueble.Alta(entidad);
+                TempData["Id"] = entidad.Id;
                 return RedirectToAction(nameof(Index));
+
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
+                return View(entidad);
             }
         }
 
         // GET: Inmuebles/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var inmueble = repositorioInmueble.GetInmueble(id);
+            ViewBag.Propietarios = repositorioPropietario.GetPropietarios();
+            ViewBag.PropietarioActual = repositorioPropietario.GetPropietario(inmueble.PropietarioId);
+            return View(inmueble);
         }
 
         // POST: Inmuebles/Edit/5
@@ -79,18 +99,19 @@ namespace MvcInmo.Controllers
         // GET: Inmuebles/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var inmueble = repositorioInmueble.GetInmueble(id);
+            return View(inmueble);
         }
 
         // POST: Inmuebles/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Eliminar(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                repositorioInmueble.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
             catch

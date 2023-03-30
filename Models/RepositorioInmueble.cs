@@ -56,7 +56,7 @@ public class RepositorioInmueble
             string query = @"INSERT INTO Inmuebles 
 					(Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId)
 					VALUES (@direccion, @ambientes, @superficie, @latitud, @longitud, @propietarioId);
-					SELECT SCOPE_IDENTITY();";
+					SELECT LAST_INSERT_ID();";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.Parameters.AddWithValue("@direccion", entidad.Direccion);
@@ -79,10 +79,10 @@ public class RepositorioInmueble
         Inmueble p = null;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            string query = @$"SELECT {nameof(Inmueble.Id)}, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId, 
+            string query = @$"SELECT i.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId, 
                     p.Nombre, p.Apellido FROM Inmuebles i 
                     JOIN Propietarios p ON i.PropietarioId = p.Id
-					WHERE {nameof(Inmueble.Id)}=@id";
+					WHERE i.Id=@id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.Parameters.Add("@id", MySqlDbType.Int16).Value = id;
