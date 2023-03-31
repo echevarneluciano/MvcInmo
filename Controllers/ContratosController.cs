@@ -32,7 +32,8 @@ namespace MvcInmo.Controllers
         // GET: Contratos/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var contrato = repositorioContrato.GetContrato(id);
+            return View(contrato);
         }
 
         // GET: Contratos/Create
@@ -99,18 +100,19 @@ namespace MvcInmo.Controllers
         // GET: Contratos/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var contrato = repositorioContrato.GetContrato(id);
+            return View(contrato);
         }
 
         // POST: Contratos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Eliminar(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                repositorioContrato.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
