@@ -8,9 +8,9 @@ public class Contrato
     public int Id { get; set; }
     public DateTime FechaFin { get; set; }
     public decimal? Precio { get; set; }
-    public int? InquilinoId { get; set; }
+    public int InquilinoId { get; set; }
     [ForeignKey(nameof(InquilinoId))]
-    public int? InmuebleId { get; set; }
+    public int InmuebleId { get; set; }
     [ForeignKey(nameof(InmuebleId))]
     public Inquilino inquilino { get; set; }
     public Inmueble inmueble { get; set; }

@@ -15,7 +15,7 @@ public class RepositorioContrato
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             var query = @"SELECT c.Id, FechaInicio, FechaFin, Precio, InquilinoId, InmuebleId, 
-            i.Nombre, i.Apellido, m.Tipo, m.PropietarioId, p.Nombre, p.Apellido  
+            i.Nombre, i.Apellido, m.Tipo, m.PropietarioId, p.Nombre, p.Apellido, m.Direccion  
             FROM Contratos c 
             INNER JOIN Inquilinos i
 				ON  c.InquilinoId = i.Id
@@ -49,6 +49,7 @@ public class RepositorioContrato
                                 Id = reader.GetInt32(5),
                                 Tipo = reader.GetString(8),
                                 PropietarioId = reader.GetInt32(9),
+                                Direccion = reader.GetString(12),
                             },
                             propietario = new Propietario
                             {
@@ -71,17 +72,16 @@ public class RepositorioContrato
         int res = 0;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            string query = @"INSERT INTO Contratos 
-					(FechaInicio, FechaFin, Precio, InquilinoId, InmuebleId)
-					VALUES (@fechaInicio, @fechaFin, @precio, @inquilinoId, @inmuebleId);
-					SELECT LAST_INSERT_ID();";
+            string query = @"INSERT INTO contratos (FechaInicio, FechaFin, Precio, InquilinoId, InmuebleId)
+            VALUES (@fechaInicio, @fechaFin, @precio, @inquilinoId, @inmuebleId);
+			SELECT LAST_INSERT_ID();";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.Parameters.Add("@fechaInicio", MySqlDbType.DateTime).Value = entidad.FechaInicio;
                 command.Parameters.Add("@fechaFin", MySqlDbType.DateTime).Value = entidad.FechaFin;
                 command.Parameters.Add("@precio", MySqlDbType.Decimal).Value = entidad.Precio;
-                command.Parameters.Add("@inquilinoId", MySqlDbType.Int16).Value = entidad.InquilinoId;
-                command.Parameters.Add("@inmuebleId", MySqlDbType.Int16).Value = entidad.InmuebleId;
+                command.Parameters.Add("@inquilinoId", MySqlDbType.Int32).Value = entidad.InquilinoId;
+                command.Parameters.Add("@inmuebleId", MySqlDbType.Int32).Value = entidad.InmuebleId;
                 connection.Open();
                 res = Convert.ToInt32(command.ExecuteScalar());
                 entidad.Id = res;
@@ -143,8 +143,8 @@ public class RepositorioContrato
         int res = -1;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            string query = @"UPDATE Contratos SET (FechaInicio, FechaFin, Precio, InquilinoId, InmuebleId)
-					VALUES (@fechaInicio, @fechaFin, @precio, @inquilinoId, @inmuebleId); 
+            string query = @"UPDATE Contratos SET FechaInicio=@fechaInicio, FechaFin=@fechaFin, 
+            Precio=@precio, InquilinoId=@inquilinoId, InmuebleId=@inmuebleId  
             WHERE Id = @id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {

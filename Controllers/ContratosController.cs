@@ -63,18 +63,31 @@ namespace MvcInmo.Controllers
         // GET: Contratos/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var contrato = repositorioContrato.GetContrato(id);
+            ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
+            ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
+            ViewBag.Inmuebles = repositorioInmueble.GetInmuebles();
+            ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
+            return View(contrato);
         }
 
         // POST: Contratos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Contrato collection)
         {
+            Contrato contrato = new Contrato();
             try
             {
-                // TODO: Add update logic here
-
+                contrato = repositorioContrato.GetContrato(id);
+                contrato.FechaInicio = collection.FechaInicio;
+                contrato.FechaFin = collection.FechaFin;
+                contrato.Precio = collection.Precio;
+                contrato.InquilinoId = collection.InquilinoId;
+                contrato.InmuebleId = collection.InmuebleId;
+                contrato.Id = id;
+                repositorioContrato.Modificacion(contrato);
+                TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch
