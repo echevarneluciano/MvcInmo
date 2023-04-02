@@ -6,3 +6,7 @@
 $(document).ready(function () {
   $(".elSelect").select2();
 });
+
+function init() {
+  $(".alert").alert();
+}

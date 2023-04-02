@@ -82,12 +82,22 @@ namespace MvcInmo.Controllers
         // POST: Inmuebles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Inmueble collection)
         {
+            Inmueble inmueble = new Inmueble();
             try
             {
-                // TODO: Add update logic here
-
+                inmueble = repositorioInmueble.GetInmueble(id);
+                inmueble.Ambientes = collection.Ambientes;
+                inmueble.Direccion = collection.Direccion;
+                inmueble.Id = collection.Id;
+                inmueble.Latitud = collection.Latitud;
+                inmueble.PropietarioId = collection.PropietarioId;
+                inmueble.Longitud = collection.Longitud;
+                inmueble.Superficie = collection.Superficie;
+                inmueble.Tipo = collection.Tipo;
+                repositorioInmueble.Modificacion(inmueble);
+                TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -112,6 +122,7 @@ namespace MvcInmo.Controllers
             {
                 // TODO: Add delete logic here
                 repositorioInmueble.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch
