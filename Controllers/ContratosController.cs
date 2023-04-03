@@ -37,6 +37,8 @@ namespace MvcInmo.Controllers
         public ActionResult Details(int id)
         {
             var contrato = repositorioContrato.GetContrato(id);
+            ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
+            ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
             return View(contrato);
         }
 

@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Details";
+    var inquilinoActual = ViewBag.InquilinoActual;
+    var inmuebleActual = ViewBag.inmuebleActual;
 }
 
 <h1>Detalles</h1>
@@ -35,16 +37,16 @@
             @Html.DisplayFor(model => model.Precio)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.InquilinoId)
+            Inquilino
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.InquilinoId)
+            @(inquilinoActual.Nombre+" "+inquilinoActual.Apellido)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.InmuebleId)
+            Inmueble
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.InmuebleId)
+            @(inmuebleActual.ToString())
         </dd>
     </dl>
 </div>
