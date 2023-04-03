@@ -19,6 +19,10 @@ namespace MvcInmo.Controllers
         public ActionResult Index()
         {
             var lista = reInq.GetInquilinos();
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
         }
 
@@ -44,6 +48,7 @@ namespace MvcInmo.Controllers
             {
                 // TODO: Add insert logic here
                 reInq.Alta(inquilino);
+                TempData["Id"] = inquilino.Id;
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -99,6 +104,7 @@ namespace MvcInmo.Controllers
             {
                 // TODO: Add delete logic here
                 reInq.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch

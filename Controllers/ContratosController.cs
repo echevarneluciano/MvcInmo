@@ -26,6 +26,10 @@ namespace MvcInmo.Controllers
         public ActionResult Index()
         {
             var lista = repositorioContrato.GetContratos();
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
         }
 
@@ -53,6 +57,7 @@ namespace MvcInmo.Controllers
             {
                 // TODO: Add insert logic here
                 repositorioContrato.Alta(collection);
+                TempData["Id"] = collection.Id;
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -115,6 +120,7 @@ namespace MvcInmo.Controllers
             {
                 // TODO: Add delete logic here
                 repositorioContrato.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch

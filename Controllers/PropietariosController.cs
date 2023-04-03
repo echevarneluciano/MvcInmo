@@ -19,6 +19,10 @@ namespace MvcInmo.Controllers
         public ActionResult Index()
         {
             var lista = reProp.GetPropietarios();
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
         }
 
@@ -45,6 +49,7 @@ namespace MvcInmo.Controllers
             {
                 // TODO: Add insert logic here
                 reProp.Alta(propietario);
+                TempData["Id"] = propietario.Id;
                 return RedirectToAction(nameof(Index));
             }
             catch
