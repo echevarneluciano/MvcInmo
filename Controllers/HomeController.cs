@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
 
@@ -16,6 +18,14 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+
+    [Authorize]
+    public ActionResult Seguro()
+    {
+        var identity = (ClaimsIdentity)User.Identity;
+        IEnumerable<Claim> claims = identity.Claims;
+        return View(claims);
     }
 
     public IActionResult Privacy()
