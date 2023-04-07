@@ -69,8 +69,8 @@ namespace MvcInmo.Controllers
                 int res = repositorioUsuario.Alta(u);
                 if (u.AvatarFile != null && u.Id > 0)
                 {
-                    string wwwPath = environment.WebRootPath;
-                    string path = Path.Combine(wwwPath, "Uploads");
+                    //string wwwPath = environment.WebRootPath;
+                    string path = @"wwwroot\Uploads";
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
@@ -78,7 +78,7 @@ namespace MvcInmo.Controllers
                     //Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
                     string fileName = "avatar_" + u.Id + Path.GetExtension(u.AvatarFile.FileName);
                     string pathCompleto = Path.Combine(path, fileName);
-                    u.Avatar = Path.Combine("/Uploads", fileName);
+                    u.Avatar = @"/Uploads/" + fileName; //Path.Combine("Uploads", fileName);
                     // Esta operación guarda la foto en memoria en la ruta que necesitamos
                     using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
                     {
