@@ -138,7 +138,7 @@ public class RepositorioUsuario
                         Id = reader.GetInt32("Id"),
                         Nombre = reader.GetString("Nombre"),
                         Apellido = reader.GetString("Apellido"),
-                        Avatar = reader.GetString("Avatar"),
+                        Avatar = (reader.IsDBNull(3)) ? "" : reader.GetString(3),
                         Email = reader.GetString("Email"),
                         Clave = reader.GetString("Clave"),
                         Rol = reader.GetInt32("Rol"),

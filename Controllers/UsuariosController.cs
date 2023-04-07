@@ -7,6 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MvcInmo.Controllers
 {
@@ -96,43 +100,70 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Usuarios/Edit/5
+        [Authorize]
+        public ActionResult Perfil()
+        {
+            ViewData["Title"] = "Mi perfil";
+            var u = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
+            ViewBag.Roles = Usuario.ObtenerRoles();
+            return View("Edit", u);
+        }
+
+        // GET: Usuarios/Edit/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
-            return View();
+            ViewData["Title"] = "Editar usuario";
+            var u = repositorioUsuario.ObtenerPorId(id);
+            ViewBag.Roles = Usuario.ObtenerRoles();
+            return View(u);
         }
 
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [Authorize]
+        public ActionResult Edit(int id, Usuario u)
         {
+            var vista = nameof(Edit);//de que vista provengo
             try
             {
+                if (!User.IsInRole("Administrador"))//no soy admin
+                {
+                    vista = nameof(Perfil);//solo puedo ver mi perfil
+                    var usuarioActual = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
+                    if (usuarioActual.Id != id)//si no es admin, solo puede modificarse él mismo
+                        return RedirectToAction(nameof(Index), "Home");
+                }
                 // TODO: Add update logic here
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(vista);
             }
-            catch
-            {
-                return View();
+            catch (Exception ex)
+            {//colocar breakpoints en la siguiente línea por si algo falla
+                throw;
             }
         }
 
         // GET: Usuarios/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
-            return View();
+            var u = repositorioUsuario.ObtenerPorId(id);
+            return View(u);
         }
 
         // POST: Usuarios/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Eliminar(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                repositorioUsuario.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -140,5 +171,77 @@ namespace MvcInmo.Controllers
                 return View();
             }
         }
+
+        public ActionResult LoginModal()
+        {
+            return PartialView("_LoginModal", new LoginView());
+        }
+
+        public ActionResult Login(string returnUrl)
+        {
+            TempData["returnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginView login)
+        {
+            try
+            {
+                var returnUrl = String.IsNullOrEmpty(TempData["returnUrl"] as string) ? "/Home" : TempData["returnUrl"].ToString();
+                if (ModelState.IsValid)
+                {
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: login.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes("complicada"),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+
+                    var e = repositorioUsuario.ObtenerPorEmail(login.Usuario);
+                    if (e == null || e.Clave != hashed)
+                    {
+                        ModelState.AddModelError("", "El email o la clave no son correctos");
+                        TempData["returnUrl"] = returnUrl;
+                        return View();
+                    }
+
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, e.Email),
+                        new Claim("FullName", e.Nombre + " " + e.Apellido),
+                        new Claim(ClaimTypes.Role, e.RolNombre),
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(
+                            claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity));
+                    TempData.Remove("returnUrl");
+                    return Redirect(returnUrl);
+                }
+                TempData["returnUrl"] = returnUrl;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View();
+            }
+        }
+
+        // GET: /salir
+        [Route("salir", Name = "logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
