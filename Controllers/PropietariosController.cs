@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
@@ -16,6 +17,7 @@ namespace MvcInmo.Controllers
             reProp = new RepositorioPropietario();
         }
         // GET: Propietarios
+        [Authorize]
         public ActionResult Index()
         {
             var lista = reProp.GetPropietarios();
@@ -27,6 +29,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Propietarios/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var propietario = reProp.GetPropietario(id);
@@ -34,6 +37,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Propietarios/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -42,6 +46,7 @@ namespace MvcInmo.Controllers
         // POST: Propietarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create(Propietario propietario)
         {
 
@@ -59,6 +64,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Propietarios/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var prop = reProp.GetPropietario(id);
@@ -68,6 +74,7 @@ namespace MvcInmo.Controllers
         // POST: Propietarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(int id, Propietario collection) //, Propietario collection
         {
             Propietario p = new Propietario();
@@ -90,6 +97,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Propietarios/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var prop = reProp.GetPropietario(id);
@@ -99,6 +107,7 @@ namespace MvcInmo.Controllers
         // POST: Propietarios/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try

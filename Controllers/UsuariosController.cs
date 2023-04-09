@@ -26,6 +26,7 @@ namespace MvcInmo.Controllers
             configuration = configuration;
         }
         // GET: Usuarios
+        [Authorize(Policy = "Administrador")]
         public ActionResult Index()
         {
             try
@@ -42,12 +43,14 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Usuarios/Details/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Details(int id)
         {
             return View();
         }
 
         // GET: Usuarios/Create
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
             ViewBag.Roles = Usuario.ObtenerRoles();
@@ -57,6 +60,7 @@ namespace MvcInmo.Controllers
         // POST: Usuarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create(Usuario u)
         {
             try
@@ -100,7 +104,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Usuarios/Edit/5
-        [Authorize]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Perfil()
         {
             ViewData["Title"] = "Mi perfil";
@@ -122,22 +126,50 @@ namespace MvcInmo.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Edit(int id, Usuario u)
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Edit(int id, Usuario form1)
         {
+            Usuario u = new Usuario();
             var vista = nameof(Edit);//de que vista provengo
             try
             {
-                if (!User.IsInRole("Administrador"))//no soy admin
-                {
-                    vista = nameof(Perfil);//solo puedo ver mi perfil
-                    var usuarioActual = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
-                    if (usuarioActual.Id != id)//si no es admin, solo puede modificarse él mismo
-                        return RedirectToAction(nameof(Index), "Home");
-                }
                 // TODO: Add update logic here
 
-                return RedirectToAction(vista);
+                u = repositorioUsuario.ObtenerPorId(id);
+                u.Nombre = form1.Nombre;
+                u.Apellido = form1.Apellido;
+                u.Email = form1.Email;
+                u.Rol = form1.Rol;
+                repositorioUsuario.Modificacion(u);
+
+                if (form1.AvatarFile != null && u.Id > 0)
+                {
+                    string path = @"wwwroot\Uploads";
+                    string fileName = "avatar_" + u.Id + Path.GetExtension(form1.AvatarFile.FileName);
+                    string pathCompleto = Path.Combine(path, fileName);
+                    u.Avatar = @"/Uploads/" + fileName;
+                    using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                    {
+                        form1.AvatarFile.CopyTo(stream);
+                    }
+                    repositorioUsuario.Modificacion(u);
+                }
+
+                if (form1.Clave != null)
+                {
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                password: form1.Clave,
+                                salt: System.Text.Encoding.ASCII.GetBytes("complicada"),
+                                prf: KeyDerivationPrf.HMACSHA1,
+                                iterationCount: 1000,
+                                numBytesRequested: 256 / 8));
+                    u.Clave = hashed;
+                    repositorioUsuario.Modificacion(u);
+                }
+
+                TempData["Mensaje"] = "Datos guardados correctamente";
+                return RedirectToAction(nameof(Index));
+
             }
             catch (Exception ex)
             {//colocar breakpoints en la siguiente línea por si algo falla
@@ -172,11 +204,7 @@ namespace MvcInmo.Controllers
             }
         }
 
-        public ActionResult LoginModal()
-        {
-            return PartialView("_LoginModal", new LoginView());
-        }
-
+        [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
             TempData["returnUrl"] = returnUrl;

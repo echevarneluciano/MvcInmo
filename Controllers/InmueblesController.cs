@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
@@ -18,6 +19,7 @@ namespace MvcInmo.Controllers
             repositorioInmueble = new RepositorioInmueble();
             repositorioPropietario = new RepositorioPropietario();
         }
+        [Authorize]
         public ActionResult Index()
         {
             var lista = repositorioInmueble.GetInmuebles();
@@ -29,6 +31,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inmuebles/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var inmueble = repositorioInmueble.GetInmueble(id);
@@ -36,6 +39,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inmuebles/Create
+        [Authorize]
         public ActionResult Create()
         {
             try
@@ -52,6 +56,7 @@ namespace MvcInmo.Controllers
         // POST: Inmuebles/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create(Inmueble entidad)
         {
             try
@@ -71,6 +76,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inmuebles/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var inmueble = repositorioInmueble.GetInmueble(id);
@@ -82,6 +88,7 @@ namespace MvcInmo.Controllers
         // POST: Inmuebles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(int id, Inmueble collection)
         {
             Inmueble inmueble = new Inmueble();
@@ -107,6 +114,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inmuebles/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var inmueble = repositorioInmueble.GetInmueble(id);
@@ -116,6 +124,7 @@ namespace MvcInmo.Controllers
         // POST: Inmuebles/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
@@ -23,6 +24,7 @@ namespace MvcInmo.Controllers
 
         }
         // GET: Contratos
+        [Authorize]
         public ActionResult Index()
         {
             var lista = repositorioContrato.GetContratos();
@@ -34,6 +36,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Contratos/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var contrato = repositorioContrato.GetContrato(id);
@@ -43,6 +46,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Contratos/Create
+        [Authorize]
         public ActionResult Create()
         {
             ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
@@ -53,6 +57,7 @@ namespace MvcInmo.Controllers
         // POST: Contratos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create(Contrato collection)
         {
             try
@@ -69,6 +74,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Contratos/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var contrato = repositorioContrato.GetContrato(id);
@@ -82,6 +88,7 @@ namespace MvcInmo.Controllers
         // POST: Contratos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(int id, Contrato collection)
         {
             Contrato contrato = new Contrato();
@@ -105,6 +112,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Contratos/Delete/5
+        [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int id)
         {
             var contrato = repositorioContrato.GetContrato(id);
@@ -116,6 +124,7 @@ namespace MvcInmo.Controllers
         // POST: Contratos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try

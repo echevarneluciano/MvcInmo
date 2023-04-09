@@ -28,10 +28,12 @@ public class HomeController : Controller
         return View(claims);
     }
 
-    public IActionResult Privacy()
+    public ActionResult Restringido()
     {
         return View();
     }
+
+
     public IActionResult Ver()
     {
         Persona persona = new Persona { Nombre = "Juan" };

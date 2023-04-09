@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
@@ -16,6 +17,7 @@ namespace MvcInmo.Controllers
             reInq = new RepositorioInquilino();
         }
         // GET: Inquilinos
+        [Authorize]
         public ActionResult Index()
         {
             var lista = reInq.GetInquilinos();
@@ -27,6 +29,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inquilinos/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var inquilino = reInq.GetInquilino(id);
@@ -34,6 +37,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inquilinos/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -42,6 +46,7 @@ namespace MvcInmo.Controllers
         // POST: Inquilinos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create(Inquilino inquilino)
         {
             try
@@ -58,6 +63,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inquilinos/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var inquilino = reInq.GetInquilino(id);
@@ -67,6 +73,7 @@ namespace MvcInmo.Controllers
         // POST: Inquilinos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(int id, Inquilino collection)
         {
             Inquilino i = new Inquilino();
@@ -89,6 +96,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Inquilinos/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var inq = reInq.GetInquilino(id);
@@ -98,6 +106,7 @@ namespace MvcInmo.Controllers
         // POST: Inquilinos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try
