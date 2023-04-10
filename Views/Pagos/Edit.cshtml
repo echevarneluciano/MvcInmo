@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Editar pago</h1>
 
 <h4>Pago</h4>
 <hr />
@@ -14,32 +14,33 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
+                <input asp-for="Id" class="form-control" disabled/>
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaPagado" class="control-label"></label>
-                <input asp-for="FechaPagado" class="form-control" />
+                <input asp-for="FechaPagado" class="form-control" id="FechaPago"/>
                 <span asp-validation-for="FechaPagado" class="text-danger"></span>
+                <input type="button" value="Borrar pago" class="btn btn-primary" id="borrarPago"/>
             </div>
             <div class="form-group">
                 <label asp-for="Mes" class="control-label"></label>
-                <input asp-for="Mes" class="form-control" />
+                <input asp-for="Mes" class="form-control" disabled/>
                 <span asp-validation-for="Mes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ContratoId" class="control-label"></label>
-                <input asp-for="ContratoId" class="form-control" />
+                <input asp-for="ContratoId" class="form-control" disabled/>
                 <span asp-validation-for="ContratoId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver</a>
 </div>
 

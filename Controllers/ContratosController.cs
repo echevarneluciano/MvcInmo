@@ -15,12 +15,14 @@ namespace MvcInmo.Controllers
         private RepositorioInquilino repositorioInquilino;
         private RepositorioContrato repositorioContrato;
         private RepositorioPropietario repositorioPropietario;
+        private RepositorioPago repositorioPago;
         public ContratosController()
         {
             repositorioInmueble = new RepositorioInmueble();
             repositorioContrato = new RepositorioContrato();
             repositorioInquilino = new RepositorioInquilino();
             repositorioPropietario = new RepositorioPropietario();
+            repositorioPago = new RepositorioPago();
 
         }
         // GET: Contratos
@@ -63,8 +65,23 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add insert logic here
-                repositorioContrato.Alta(collection);
                 TempData["Id"] = collection.Id;
+                if (repositorioContrato.Alta(collection) > 0)
+                {
+                    var fechai = collection.FechaInicio;
+                    var fechaf = collection.FechaFin;
+                    var diferencia = fechaf.Subtract(fechai);
+                    var meses = diferencia.Days / 30;
+                    Console.WriteLine("Cantidad de meses: " + meses);
+                    for (int i = 0; i < meses; i++)
+                    {
+                        var pago = new Pago();
+                        pago.Mes = i;
+                        pago.ContratoId = collection.Id;
+                        repositorioPago.Alta(pago);
+                    }
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch

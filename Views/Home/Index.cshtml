@@ -6,10 +6,16 @@
     <h1 class="display-4">Bienvenido!</h1>
     <h4>Logeo: <a href="/Usuarios/Login">Ingreso de usuarios</a>.</h4>
     <br>
+    @if (User.Identity.IsAuthenticated){
     <p>Propietarios: <a href="/Propietarios">Lista de propietarios</a>.</p>
     <p>Inquilinos: <a href="/Inquilinos">Lista de inquilinos</a>.</p>
     <p>Inmuebles: <a href="/Inmuebles">Lista de inmuebles</a>.</p>
     <p>Contratos: <a href="/Contratos">Lista de contratos</a>.</p>
     <p>Pagos: <a href="/Contratos">Lista de pagos</a>.</p>
+    @if(User.IsInRole("Administrador")){
     <p>Usuarios: <a href="/Usuarios">Lista de usuarios</a>.</p>
+    }else{
+        <p>Mi perfil: <a href="/Usuarios/Perfil">Mi Perfil</a>.</p>
+    }
+    }
 </div>

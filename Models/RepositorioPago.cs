@@ -124,7 +124,7 @@ public class RepositorioPago
                     {
                         Id = reader.GetInt32("Id"),
                         Mes = reader.GetInt32("Mes"),
-                        FechaPagado = reader.GetDateTime("FechaPagado"),
+                        FechaPagado = (reader.IsDBNull(2)) ? null : reader.GetDateTime(2),
                         ContratoId = reader.GetInt32("ContratoId"),
                     };
                 }

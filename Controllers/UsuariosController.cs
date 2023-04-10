@@ -104,7 +104,7 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Usuarios/Edit/5
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Perfil()
         {
             ViewData["Title"] = "Mi perfil";

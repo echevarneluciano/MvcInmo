@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Crear nuevo contrato</a>
 </p>
-<table class="table">
+<table class="tableplus">
     <thead>
         <tr>
             <th>
@@ -20,9 +20,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FechaFin)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
             </th>
             <th>
                 Inquilino
@@ -49,9 +46,6 @@
                 @Html.DisplayFor(modelItem => item.FechaFin)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.inquilino.Nombre)
                 @Html.DisplayFor(modelItem => item.inquilino.Apellido)
             </td>
@@ -64,8 +58,10 @@
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new {  id=item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new { id=item.Id }) |
+                @Html.ActionLink("Detalles", "Details", new { id=item.Id })
+                @if(User.IsInRole("Administrador")){  
                 @Html.ActionLink("Eliminar", "Delete", new { id=item.Id })
+                }
             </td>
         </tr>
 }

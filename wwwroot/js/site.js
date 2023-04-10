@@ -4,6 +4,12 @@
 // Write your JavaScript code.
 
 $(document).ready(function () {
+  $("#borrarPago").click(function (event) {
+    $("#FechaPago").val(null);
+  });
+});
+
+$(document).ready(function () {
   $(".elSelect").select2();
 });
 

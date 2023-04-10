@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MvcInmo.Models;
@@ -20,6 +21,7 @@ namespace MvcInmo.Controllers
         // GET: Pagos
         public ActionResult Index()
         {
+
             var lista = rePago.ObtenerTodos();
             return View(lista);
         }
@@ -27,7 +29,8 @@ namespace MvcInmo.Controllers
         // GET: Pagos/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var lista = rePago.ObtenerPorId(id);
+            return View(lista);
         }
 
         // GET: Pagos/Create
@@ -56,18 +59,22 @@ namespace MvcInmo.Controllers
         // GET: Pagos/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var lista = rePago.ObtenerPorId(id);
+            return View(lista);
         }
 
         // POST: Pagos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Pago collection)
         {
+            Pago pago = new Pago();
             try
             {
                 // TODO: Add update logic here
-
+                pago = rePago.ObtenerPorId(collection.Id);
+                pago.FechaPagado = collection.FechaPagado;
+                rePago.Modificacion(pago);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -77,20 +84,22 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Pagos/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
-            return View();
+            var lista = rePago.ObtenerPorId(id);
+            return View(lista);
         }
 
         // POST: Pagos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Eliminar(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                rePago.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
