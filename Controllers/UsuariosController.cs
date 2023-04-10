@@ -110,7 +110,7 @@ namespace MvcInmo.Controllers
             ViewData["Title"] = "Mi perfil";
             var u = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
             ViewBag.Roles = Usuario.ObtenerRoles();
-            return View("Edit", u);
+            return View("Perfil", u);
         }
 
         // GET: Usuarios/Edit/5
@@ -126,15 +126,12 @@ namespace MvcInmo.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Edit(int id, Usuario form1)
         {
             Usuario u = new Usuario();
-            var vista = nameof(Edit);//de que vista provengo
             try
             {
-                // TODO: Add update logic here
-
                 u = repositorioUsuario.ObtenerPorId(id);
                 u.Nombre = form1.Nombre;
                 u.Apellido = form1.Apellido;
@@ -155,7 +152,7 @@ namespace MvcInmo.Controllers
                     repositorioUsuario.Modificacion(u);
                 }
 
-                if (form1.Clave != null)
+                if (form1.Clave != null && User.IsInRole("Administrador"))
                 {
                     string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                                 password: form1.Clave,
@@ -168,11 +165,56 @@ namespace MvcInmo.Controllers
                 }
 
                 TempData["Mensaje"] = "Datos guardados correctamente";
+                if (!User.IsInRole("Administrador")) { return RedirectToAction(nameof(Perfil)); }
                 return RedirectToAction(nameof(Index));
 
             }
             catch (Exception ex)
             {//colocar breakpoints en la siguiente línea por si algo falla
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult CambiarPass(int id, String claveNueva, String clave, String confirmarNueva)
+        {
+            Usuario u = new Usuario();
+            string hashed;
+            try
+            {
+                u = repositorioUsuario.ObtenerPorId(id);
+                if (claveNueva == confirmarNueva)
+                {
+                    hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                                    password: claveNueva,
+                                                    salt: System.Text.Encoding.ASCII.GetBytes("complicada"),
+                                                    prf: KeyDerivationPrf.HMACSHA1,
+                                                    iterationCount: 1000,
+                                                    numBytesRequested: 256 / 8));
+                    claveNueva = hashed;
+                }
+
+                hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                                 password: clave,
+                                                 salt: System.Text.Encoding.ASCII.GetBytes("complicada"),
+                                                 prf: KeyDerivationPrf.HMACSHA1,
+                                                 iterationCount: 1000,
+                                                 numBytesRequested: 256 / 8));
+                clave = hashed;
+
+                if (clave == u.Clave)
+                {
+                    u.Clave = claveNueva;
+                    repositorioUsuario.Modificacion(u);
+                }
+
+                return RedirectToAction(nameof(Perfil));
+            }
+            catch (System.Exception)
+            {
+
                 throw;
             }
         }
