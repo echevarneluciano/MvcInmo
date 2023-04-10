@@ -107,6 +107,10 @@ namespace MvcInmo.Controllers
         [Authorize]
         public ActionResult Perfil()
         {
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             ViewData["Title"] = "Mi perfil";
             var u = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
             ViewBag.Roles = Usuario.ObtenerRoles();
@@ -127,7 +131,7 @@ namespace MvcInmo.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit(int id, Usuario form1)
+        public async Task<ActionResult> Edit(int id, Usuario form1)
         {
             Usuario u = new Usuario();
             try
@@ -137,7 +141,15 @@ namespace MvcInmo.Controllers
                 u.Apellido = form1.Apellido;
                 u.Email = form1.Email;
                 u.Rol = form1.Rol;
-                repositorioUsuario.Modificacion(u);
+                if (repositorioUsuario.Modificacion(u) > 0)
+                {
+                    var identity = (ClaimsIdentity)User.Identity;
+                    identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
+                    identity.AddClaim(new Claim(ClaimTypes.Name, form1.Email));
+                    await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity));
+                }
 
                 if (form1.AvatarFile != null && u.Id > 0)
                 {
@@ -195,6 +207,11 @@ namespace MvcInmo.Controllers
                                                     numBytesRequested: 256 / 8));
                     claveNueva = hashed;
                 }
+                else
+                {
+                    TempData["Mensaje"] = "Las contraseñas no coinciden";
+                    return RedirectToAction(nameof(Perfil));
+                }
 
                 hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                                                  password: clave,
@@ -208,6 +225,7 @@ namespace MvcInmo.Controllers
                 {
                     u.Clave = claveNueva;
                     repositorioUsuario.Modificacion(u);
+                    TempData["Mensaje"] = "Contraseña actualizada!";
                 }
 
                 return RedirectToAction(nameof(Perfil));
