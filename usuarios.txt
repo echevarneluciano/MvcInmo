@@ -1,0 +1,7 @@
+usuario admin:
+admin@admin.com
+admin
+
+usuario empleado:
+empleado@empleado.com
+empleado
