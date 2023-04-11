@@ -52,7 +52,7 @@ namespace MvcInmo.Controllers
         public ActionResult Create()
         {
             ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
-            ViewBag.Inmuebles = repositorioInmueble.GetInmuebles();
+            ViewBag.Inmuebles = repositorioInmueble.GetInmueblesDisponibles();
             return View();
         }
 

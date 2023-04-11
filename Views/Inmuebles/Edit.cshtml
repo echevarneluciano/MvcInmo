@@ -40,6 +40,20 @@
                 <span asp-validation-for="Longitud" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+				<label class="control-label">Estado</label><br>
+				<select class="elSelect" name="Estado">
+                    <option value="@Model.Estado">@((Model.Estado==1) ? "Disponible" : "No disponible")</option>
+					<option value=0>No disponible</option>
+                    <option value=1>Disponible</option>
+				</select>
+				<span asp-validation-for="Estado" class="text-danger"></span>
+			</div><br>
+            <div class="form-group">
 				<label class="control-label">Tipo de alquiler</label><br>
 				<select class="elSelect" name="Tipo">
                     <option value="@Model.Tipo">@(Model.Tipo)</option>

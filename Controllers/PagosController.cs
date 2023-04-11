@@ -74,6 +74,7 @@ namespace MvcInmo.Controllers
                 // TODO: Add update logic here
                 pago = rePago.ObtenerPorId(collection.Id);
                 pago.FechaPagado = collection.FechaPagado;
+                pago.Importe = collection.Importe;
                 rePago.Modificacion(pago);
                 return RedirectToAction(nameof(Index));
             }

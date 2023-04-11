@@ -103,6 +103,8 @@ namespace MvcInmo.Controllers
                 inmueble.Longitud = collection.Longitud;
                 inmueble.Superficie = collection.Superficie;
                 inmueble.Tipo = collection.Tipo;
+                inmueble.Precio = collection.Precio;
+                inmueble.Estado = collection.Estado;
                 repositorioInmueble.Modificacion(inmueble);
                 TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));

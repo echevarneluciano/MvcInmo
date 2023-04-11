@@ -24,6 +24,11 @@
                 <input type="button" value="Borrar pago" class="btn btn-primary" id="borrarPago"/>
             </div>
             <div class="form-group">
+                <label asp-for="Importe" class="control-label"></label>
+                <input asp-for="Importe" class="form-control"/>
+                <span asp-validation-for="Importe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Mes" class="control-label"></label>
                 <input asp-for="Mes" class="form-control" disabled/>
                 <span asp-validation-for="Mes" class="text-danger"></span>

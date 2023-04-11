@@ -57,7 +57,8 @@ public class RepositorioPago
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             string query = @"UPDATE Pagos 
-					SET Mes = @mes, FechaPagado = @fechapagado, ContratoId = @contratoid 
+					SET Mes = @mes, FechaPagado = @fechapagado, 
+                    ContratoId = @contratoid, Importe = @importe  
 					WHERE Id = @id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
@@ -65,6 +66,7 @@ public class RepositorioPago
                 command.Parameters.AddWithValue("@mes", e.Mes);
                 command.Parameters.AddWithValue("@fechapagado", e.FechaPagado);
                 command.Parameters.AddWithValue("@contratoid", e.ContratoId);
+                command.Parameters.AddWithValue("@importe", e.Importe);
                 command.Parameters.AddWithValue("@id", e.Id);
                 connection.Open();
                 res = command.ExecuteNonQuery();
@@ -79,7 +81,7 @@ public class RepositorioPago
         IList<Pago> res = new List<Pago>();
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = @"SELECT Id, Mes, FechaPagado, ContratoId
+            var query = @"SELECT Id, Mes, FechaPagado, ContratoId, Importe 
 					FROM Pagos";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
@@ -94,6 +96,7 @@ public class RepositorioPago
                         Mes = reader.GetInt32(nameof(Pago.Mes)),
                         FechaPagado = (reader.IsDBNull(2)) ? null : reader.GetDateTime(2),
                         ContratoId = reader.GetInt32(nameof(Pago.ContratoId)),
+                        Importe = (reader.IsDBNull(4)) ? 0 : reader.GetDouble(4),
                     };
                     res.Add(e);
                 }
@@ -109,7 +112,7 @@ public class RepositorioPago
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             string query = @"SELECT 
-					Id, Mes, FechaPagado, ContratoId 
+					Id, Mes, FechaPagado, ContratoId, Importe  
 					FROM Pagos
 					WHERE Id=@id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -126,6 +129,7 @@ public class RepositorioPago
                         Mes = reader.GetInt32("Mes"),
                         FechaPagado = (reader.IsDBNull(2)) ? null : reader.GetDateTime(2),
                         ContratoId = reader.GetInt32("ContratoId"),
+                        Importe = (reader.IsDBNull(4)) ? 0 : reader.GetDouble("Importe"),
                     };
                 }
                 connection.Close();
@@ -139,7 +143,7 @@ public class RepositorioPago
         IList<Pago> res = new List<Pago>();
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = @"SELECT Id, Mes, FechaPagado, ContratoId
+            var query = @"SELECT Id, Mes, FechaPagado, ContratoId, Importe 
 					FROM Pagos WHERE ContratoId=@contratoid";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
@@ -155,6 +159,7 @@ public class RepositorioPago
                         Mes = reader.GetInt32(nameof(Pago.Mes)),
                         FechaPagado = reader.GetDateTime(nameof(Pago.FechaPagado)),
                         ContratoId = reader.GetInt32(nameof(Pago.ContratoId)),
+                        Importe = reader.GetDouble(nameof(Pago.Importe)),
                     };
                     res.Add(e);
                 }

@@ -6,6 +6,7 @@ public class Pago
     public DateTime? FechaPagado { get; set; }
     public int Mes { get; set; }
     public int ContratoId { get; set; }
+    public Double? Importe { get; set; }
     public Contrato contrato { get; set; }
     public Pago(DateTime FechaPagado, int Mes, int ContratoId, Contrato contrato)
     {

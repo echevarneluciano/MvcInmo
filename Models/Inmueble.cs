@@ -14,6 +14,9 @@ public class Inmueble
     public decimal? Longitud { get; set; }
     public string? Tipo { get; set; }
     public int PropietarioId { get; set; }
+    public int? Estado { get; set; }
+    public Double Precio { get; set; }
+
     [ForeignKey(nameof(PropietarioId))]
     public Propietario? Duenio { get; set; }
     public override string ToString()

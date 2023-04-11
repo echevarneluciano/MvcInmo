@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Crear nuevo</a>
 </p>
-<table class="table">
+<table class="tableplus">
     <thead>
         <tr>
             <th>
@@ -25,13 +25,10 @@
                 @Html.DisplayNameFor(model => model.Superficie)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Latitud)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Longitud)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Tipo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
             </th>
             <th>
                 Propietario
@@ -55,13 +52,10 @@
                 @Html.DisplayFor(modelItem => item.Superficie)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Latitud)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Longitud)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Tipo)
+            </td>
+            <td>
+                @((item.Estado==1) ? "Disponible" : "No disponible")
             </td>
             <td>
                 @(item.Duenio.Nombre+" "+item.Duenio.Apellido)

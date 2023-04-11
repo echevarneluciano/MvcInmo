@@ -14,7 +14,7 @@ public class RepositorioContrato
         List<Contrato> Contratos = new List<Contrato>();
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = @"SELECT c.Id, FechaInicio, FechaFin, Precio, InquilinoId, InmuebleId, 
+            var query = @"SELECT c.Id, FechaInicio, FechaFin, c.Precio, InquilinoId, InmuebleId, 
             i.Nombre, i.Apellido, m.Tipo, m.PropietarioId, p.Nombre, p.Apellido, m.Direccion  
             FROM Contratos c 
             INNER JOIN Inquilinos i
@@ -96,7 +96,7 @@ public class RepositorioContrato
         Contrato p = null;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            string query = @$"SELECT c.Id, FechaInicio, FechaFin, Precio, InquilinoId, InmuebleId, 
+            string query = @$"SELECT c.Id, FechaInicio, FechaFin, c.Precio, InquilinoId, InmuebleId, 
             i.Nombre, i.Apellido, m.Tipo, m.PropietarioId  
             FROM Contratos c 
             INNER JOIN Inquilinos i
