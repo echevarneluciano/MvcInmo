@@ -51,9 +51,22 @@ namespace MvcInmo.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
-            ViewBag.Inmuebles = repositorioInmueble.GetInmueblesDisponibles();
-            return View();
+            try
+            {
+                if (TempData.ContainsKey("Id"))
+                    ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
+                ViewBag.Inmuebles = repositorioInmueble.GetInmueblesDisponibles();
+                return View();
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+
         }
 
         // POST: Contratos/Create
@@ -65,13 +78,31 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add insert logic here
-                TempData["Id"] = collection.Id;
+                Contrato controlFecha;
+                controlFecha = repositorioContrato.compruebaFechas(collection.InmuebleId, collection.FechaInicio, collection.FechaFin);
+                if (controlFecha != null)
+                {
+                    TempData["Mensaje"] = "El inmueble id: " + collection.InmuebleId + " tiene contrato en la fecha seleccionada";
+                    return RedirectToAction(nameof(Create));
+                }
+                if (collection.FechaFin < collection.FechaInicio)
+                {
+                    TempData["Mensaje"] = "La fecha de fin debe ser mayor a la de inicio";
+                    return RedirectToAction(nameof(Create));
+                }
+                if (collection.Precio == null)
+                {
+                    TempData["Mensaje"] = "El precio no puede ser nulo";
+                    return RedirectToAction(nameof(Create));
+                }
                 if (repositorioContrato.Alta(collection) > 0)
                 {
+                    TempData["Mensaje"] = "Contrato creado con exito, id: " + collection.Id;
                     var fechai = collection.FechaInicio;
                     var fechaf = collection.FechaFin;
                     var diferencia = fechaf.Subtract(fechai);
                     var meses = diferencia.Days / 30;
+                    if (meses == 0) { meses = 1; }
                     Console.WriteLine("Cantidad de meses: " + meses);
                     for (int i = 0; i < meses; i++)
                     {

@@ -179,6 +179,37 @@ public class RepositorioContrato
         }
         return res;
     }
+
+    public Contrato compruebaFechas(int idInmueble, DateTime fechaInicio, DateTime fechaFin)
+    {
+        Contrato p = null;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            string query = @$"SELECT c.Id FROM contratos c 
+                           WHERE	c.InmuebleId=@id
+                           AND (c.FechaInicio BETWEEN @fechaInicio AND @fechaFin
+                           OR	c.FechaFin BETWEEN @fechaInicio AND @fechaFin);";
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.Add("@id", MySqlDbType.Int16).Value = idInmueble;
+                command.Parameters.Add("@fechaInicio", MySqlDbType.DateTime).Value = fechaInicio;
+                command.Parameters.Add("@fechaFin", MySqlDbType.DateTime).Value = fechaFin;
+                //command.CommandType = CommandType.Text;
+                connection.Open();
+                var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    p = new Contrato
+                    {
+                        Id = reader.GetInt32(0),
+                    };
+                }
+                connection.Close();
+            }
+        }
+        return p;
+    }
+
 }
 
 
