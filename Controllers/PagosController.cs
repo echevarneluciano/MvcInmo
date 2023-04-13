@@ -19,14 +19,19 @@ namespace MvcInmo.Controllers
             reContrato = new RepositorioContrato();
         }
         // GET: Pagos
+        [Authorize]
         public ActionResult Index()
         {
-
+            if (TempData.ContainsKey("Mensaje"))
+            {
+                ViewBag.Mensaje = TempData["Mensaje"];
+            }
             var lista = rePago.ObtenerTodos();
             return View(lista);
         }
 
         // GET: Pagos/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var lista = rePago.ObtenerPorId(id);
@@ -57,8 +62,11 @@ namespace MvcInmo.Controllers
         }
 
         // GET: Pagos/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             var lista = rePago.ObtenerPorId(id);
             return View(lista);
         }
@@ -66,16 +74,30 @@ namespace MvcInmo.Controllers
         // POST: Pagos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(Pago collection)
         {
             Pago pago = new Pago();
             try
             {
                 // TODO: Add update logic here
+                if (collection.FechaPagado == null)
+                {
+                    TempData["Mensaje"] = "Debe ingresar la fecha de pago";
+                    return RedirectToAction(nameof(Edit), new { id = collection.Id });
+                }
+                if (collection.Importe <= 0)
+                {
+                    TempData["Mensaje"] = "Debe ingresar un importe mayor a cero";
+                    return RedirectToAction(nameof(Edit), new { id = collection.Id });
+                }
                 pago = rePago.ObtenerPorId(collection.Id);
                 pago.FechaPagado = collection.FechaPagado;
                 pago.Importe = collection.Importe;
-                rePago.Modificacion(pago);
+                if (rePago.Modificacion(pago) > 0)
+                {
+                    TempData["Mensaje"] = "Datos guardados correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -95,12 +117,16 @@ namespace MvcInmo.Controllers
         // POST: Pagos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                rePago.Baja(id);
+                if (rePago.Baja(id) > 0)
+                {
+                    TempData["Mensaje"] = "Datos eliminados correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch

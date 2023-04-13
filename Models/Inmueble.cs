@@ -15,7 +15,7 @@ public class Inmueble
     public string? Tipo { get; set; }
     public int PropietarioId { get; set; }
     public int? Estado { get; set; }
-    public Double Precio { get; set; }
+    public Decimal? Precio { get; set; }
 
     [ForeignKey(nameof(PropietarioId))]
     public Propietario? Duenio { get; set; }

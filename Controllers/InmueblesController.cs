@@ -62,8 +62,10 @@ namespace MvcInmo.Controllers
             try
             {
                 ViewBag.Propietarios = repositorioPropietario.GetPropietarios();
-                repositorioInmueble.Alta(entidad);
-                TempData["Id"] = entidad.Id;
+                if (repositorioInmueble.Alta(entidad) > 0)
+                {
+                    TempData["Mensaje"] = "Inmueble creado con exito. Id: " + entidad.Id;
+                }
                 return RedirectToAction(nameof(Index));
 
             }
@@ -105,8 +107,10 @@ namespace MvcInmo.Controllers
                 inmueble.Tipo = collection.Tipo;
                 inmueble.Precio = collection.Precio;
                 inmueble.Estado = collection.Estado;
-                repositorioInmueble.Modificacion(inmueble);
-                TempData["Mensaje"] = "Datos guardados correctamente";
+                if (repositorioInmueble.Modificacion(inmueble) > 0)
+                {
+                    TempData["Mensaje"] = "Datos guardados correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -132,8 +136,10 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add delete logic here
-                repositorioInmueble.Baja(id);
-                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                if (repositorioInmueble.Baja(id) > 0)
+                {
+                    TempData["Mensaje"] = "Eliminación realizada correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -40,6 +40,8 @@ namespace MvcInmo.Controllers
         [Authorize]
         public ActionResult Create()
         {
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             return View();
         }
 
@@ -53,8 +55,17 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add insert logic here
-                reProp.Alta(propietario);
-                TempData["Id"] = propietario.Id;
+                if (propietario.Nombre == null || propietario.Apellido == null || propietario.DNI == null
+                || propietario.Telefono == null || propietario.Email == null)
+                {
+                    TempData["Mensaje"] = "Debe llenar todos los campos";
+                    return RedirectToAction(nameof(Create));
+                }
+                if (reProp.Alta(propietario) > 0)
+                {
+                    TempData["Mensaje"] = "Alta realizada correctamente. id: " + propietario.Id;
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -86,8 +97,10 @@ namespace MvcInmo.Controllers
                 p.DNI = collection.DNI;
                 p.Telefono = collection.Telefono;
                 p.Email = collection.Email;
-                reProp.Modificacion(p);
-                TempData["Mensaje"] = "Datos guardados correctamente";
+                if (reProp.Modificacion(p) > 0)
+                {
+                    TempData["Mensaje"] = "Datos guardados correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -113,8 +126,10 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add delete logic here
-                reProp.Baja(id);
-                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                if (reProp.Baja(id) > 0)
+                {
+                    TempData["Mensaje"] = "Eliminación realizada correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch

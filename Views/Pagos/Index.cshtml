@@ -6,14 +6,6 @@
 
 <h1>Lista de pagos</h1>
 
-@* <div class="text-right form-inline">
-    <form method="post", asp-action="Buscar">
-        <div class="form-group">
-            @Html.TextBox("buscar", null, new { placeholder = "filtro por Id de contrato", @class = "form-control" })
-        </div>
-        <input type="submit" value="Buscar" class="btn btn-primary" />
-    </form>
-</div> *@
 <table class="tableplus">
     <thead>
         <tr>
@@ -25,6 +17,12 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Mes)
+            </th>
+            <th>
+                Importe abonado
+            </th>
+            <th>
+                Importe mensualidad
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ContratoId)
@@ -43,6 +41,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Mes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Importe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.contrato.Precio)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ContratoId)

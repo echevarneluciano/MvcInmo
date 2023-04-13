@@ -35,7 +35,7 @@ public class RepositorioInmueble
                             PropietarioId = reader.GetInt32(6),
                             Tipo = reader.GetString(7),
                             Estado = reader.GetInt32(10),
-                            Precio = (reader.IsDBNull(11)) ? 0 : reader.GetDouble(11),//reader.GetDouble(11),
+                            Precio = (reader.IsDBNull(11)) ? 0 : reader.GetDecimal(11),//reader.GetDouble(11),
                             Duenio = new Propietario
                             {
                                 Id = reader.GetInt32(6),
@@ -110,7 +110,7 @@ public class RepositorioInmueble
                         PropietarioId = reader.GetInt32("PropietarioId"),
                         Tipo = reader.GetString("Tipo"),
                         Estado = reader.GetInt32("Estado"),
-                        Precio = (reader.IsDBNull(11)) ? 0 : reader.GetDouble(11),
+                        Precio = (reader.IsDBNull(11)) ? 0 : reader.GetDecimal(11),
                         Duenio = new Propietario
                         {
                             Id = reader.GetInt32("Id"),
@@ -201,7 +201,7 @@ public class RepositorioInmueble
                         Tipo = reader.GetString("Tipo"),
                         PropietarioId = reader.GetInt32("PropietarioId"),
                         Estado = reader.GetInt32("Estado"),
-                        Precio = reader.GetDouble("Precio"),
+                        Precio = reader.GetDecimal("Precio"),
                         Duenio = new Propietario
                         {
                             Id = reader.GetInt32("Id"),
@@ -246,7 +246,7 @@ public class RepositorioInmueble
                             PropietarioId = reader.GetInt32(6),
                             Tipo = reader.GetString(7),
                             Estado = reader.GetInt32(10),
-                            Precio = (reader.IsDBNull(11)) ? 0 : reader.GetDouble(11),//reader.GetDouble(11),
+                            Precio = (reader.IsDBNull(11)) ? 0 : reader.GetDecimal(11),//reader.GetDouble(11),
                             Duenio = new Propietario
                             {
                                 Id = reader.GetInt32(6),

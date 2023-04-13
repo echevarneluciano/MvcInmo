@@ -32,11 +32,11 @@
                 <label asp-for="Avatar" class="control-label"></label><br />
                 @if (Model.Avatar != "")
                 {
-                                                                                        <img src="@Model.Avatar" width="80"/>
+                                                                                            <img src="@Model.Avatar" width="80"/>
                 }
                 else
                 {
-                                                                                        <p>Sin avatar</p>
+                                                                                            <p>Sin avatar</p>
                 }
             </div>
             <div class="form-group">
@@ -57,7 +57,7 @@
     <div class="col-md-4">
         <form asp-action = "CambiarPass" asp-route-id="@Model.Id" name="CambiarPass">
             <div>
-                <label for="clave" class="control-label">Clave nueva</label>
+                <label for="clave" class="control-label">Clave actual</label>
                 <input type="password" name="clave" id="clave" class="form-control">
             </div>
             <div>

@@ -81,8 +81,12 @@ public class RepositorioPago
         IList<Pago> res = new List<Pago>();
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = @"SELECT Id, Mes, FechaPagado, ContratoId, Importe 
-					FROM Pagos";
+            var query = @"SELECT 
+					p.Id, Mes, FechaPagado, ContratoId, Importe, 
+                    c.Id, c.Precio   
+					FROM Pagos p
+                    INNER JOIN Contratos c 
+                    ON c.Id = p.ContratoId";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 //command.CommandType = CommandType.Text;
@@ -92,11 +96,16 @@ public class RepositorioPago
                 {
                     Pago e = new Pago
                     {
-                        Id = reader.GetInt32(nameof(Pago.Id)),
-                        Mes = reader.GetInt32(nameof(Pago.Mes)),
+                        Id = reader.GetInt32(0),
+                        Mes = reader.GetInt32(1),
                         FechaPagado = (reader.IsDBNull(2)) ? null : reader.GetDateTime(2),
-                        ContratoId = reader.GetInt32(nameof(Pago.ContratoId)),
-                        Importe = (reader.IsDBNull(4)) ? 0 : reader.GetDouble(4),
+                        ContratoId = reader.GetInt32(3),
+                        Importe = (reader.IsDBNull(4)) ? 0 : reader.GetDecimal(4),
+                        contrato = new Contrato()
+                        {
+                            Id = reader.GetInt32(5),
+                            Precio = reader.GetDecimal(6),
+                        }
                     };
                     res.Add(e);
                 }
@@ -112,9 +121,12 @@ public class RepositorioPago
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             string query = @"SELECT 
-					Id, Mes, FechaPagado, ContratoId, Importe  
-					FROM Pagos
-					WHERE Id=@id";
+					p.Id, Mes, FechaPagado, ContratoId, Importe, 
+                    c.Id, c.Precio   
+					FROM Pagos p
+                    INNER JOIN Contratos c 
+                    ON c.Id = p.ContratoId
+					WHERE p.Id=@id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.Parameters.Add("@id", MySqlDbType.Int16).Value = id;
@@ -125,11 +137,16 @@ public class RepositorioPago
                 {
                     e = new Pago
                     {
-                        Id = reader.GetInt32("Id"),
-                        Mes = reader.GetInt32("Mes"),
+                        Id = reader.GetInt32(0),
+                        Mes = reader.GetInt32(1),
                         FechaPagado = (reader.IsDBNull(2)) ? null : reader.GetDateTime(2),
-                        ContratoId = reader.GetInt32("ContratoId"),
-                        Importe = (reader.IsDBNull(4)) ? 0 : reader.GetDouble("Importe"),
+                        ContratoId = reader.GetInt32(3),
+                        Importe = (reader.IsDBNull(4)) ? 0 : reader.GetDecimal(4),
+                        contrato = new Contrato()
+                        {
+                            Id = reader.GetInt32(5),
+                            Precio = reader.GetDecimal(6),
+                        }
                     };
                 }
                 connection.Close();
@@ -159,7 +176,7 @@ public class RepositorioPago
                         Mes = reader.GetInt32(nameof(Pago.Mes)),
                         FechaPagado = reader.GetDateTime(nameof(Pago.FechaPagado)),
                         ContratoId = reader.GetInt32(nameof(Pago.ContratoId)),
-                        Importe = reader.GetDouble(nameof(Pago.Importe)),
+                        Importe = reader.GetDecimal(nameof(Pago.Importe)),
                     };
                     res.Add(e);
                 }

@@ -29,22 +29,39 @@ namespace MvcInmo.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            var lista = repositorioContrato.GetContratos();
-            if (TempData.ContainsKey("Id"))
-                ViewBag.Id = TempData["Id"];
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            return View(lista);
+            try
+            {
+                var lista = repositorioContrato.GetContratos();
+                if (TempData.ContainsKey("Id"))
+                    ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                return View(lista);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
         }
 
         // GET: Contratos/Details/5
         [Authorize]
         public ActionResult Details(int id)
         {
-            var contrato = repositorioContrato.GetContrato(id);
-            ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
-            ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
-            return View(contrato);
+            try
+            {
+                var contrato = repositorioContrato.GetContrato(id);
+                ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
+                ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
+                return View(contrato);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+
         }
 
         // GET: Contratos/Create
@@ -125,12 +142,21 @@ namespace MvcInmo.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-            var contrato = repositorioContrato.GetContrato(id);
-            ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
-            ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
-            ViewBag.Inmuebles = repositorioInmueble.GetInmuebles();
-            ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
-            return View(contrato);
+            try
+            {
+                var contrato = repositorioContrato.GetContrato(id);
+                ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
+                ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
+                ViewBag.Inmuebles = repositorioInmueble.GetInmuebles();
+                ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
+                return View(contrato);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+
         }
 
         // POST: Contratos/Edit/5
@@ -149,8 +175,10 @@ namespace MvcInmo.Controllers
                 contrato.InquilinoId = collection.InquilinoId;
                 contrato.InmuebleId = collection.InmuebleId;
                 contrato.Id = id;
-                repositorioContrato.Modificacion(contrato);
-                TempData["Mensaje"] = "Datos guardados correctamente";
+                if (repositorioContrato.Modificacion(contrato) > 0)
+                {
+                    TempData["Mensaje"] = "Datos guardados correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -178,8 +206,10 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add delete logic here
-                repositorioContrato.Baja(id);
-                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                if (repositorioContrato.Baja(id) > 0)
+                {
+                    TempData["Mensaje"] = "Eliminación realizada correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch

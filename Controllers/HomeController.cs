@@ -17,6 +17,10 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        if (TempData.ContainsKey("Mensaje"))
+        {
+            ViewBag.Mensaje = TempData["Mensaje"];
+        }
         return View();
     }
 

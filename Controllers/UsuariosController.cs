@@ -31,6 +31,10 @@ namespace MvcInmo.Controllers
         {
             try
             {
+                if (TempData.ContainsKey("Mensaje"))
+                {
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                }
                 var lista = repositorioUsuario.ObtenerTodos();
                 return View(lista);
             }
@@ -73,7 +77,6 @@ namespace MvcInmo.Controllers
                                 numBytesRequested: 256 / 8));
                 u.Clave = hashed;
                 u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
-                //var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
                 int res = repositorioUsuario.Alta(u);
                 if (u.AvatarFile != null && u.Id > 0)
                 {
@@ -84,7 +87,8 @@ namespace MvcInmo.Controllers
                         Directory.CreateDirectory(path);
                     }
                     //Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
-                    string fileName = "avatar_" + u.Id + Path.GetExtension(u.AvatarFile.FileName);
+                    var nbreRnd = Guid.NewGuid();
+                    string fileName = "avatar_" + u.Id + nbreRnd + Path.GetExtension(u.AvatarFile.FileName);
                     string pathCompleto = Path.Combine(path, fileName);
                     u.Avatar = @"/Uploads/" + fileName; //Path.Combine("Uploads", fileName);
                     // Esta operación guarda la foto en memoria en la ruta que necesitamos
@@ -93,6 +97,10 @@ namespace MvcInmo.Controllers
                         u.AvatarFile.CopyTo(stream);
                     }
                     repositorioUsuario.Modificacion(u);
+                }
+                if (res > 0)
+                {
+                    TempData["Mensaje"] = "Usuario creado correctamente";
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -139,9 +147,10 @@ namespace MvcInmo.Controllers
                 u = repositorioUsuario.ObtenerPorId(id);
                 u.Nombre = form1.Nombre;
                 u.Apellido = form1.Apellido;
+                var cambiaMail = (form1.Email != u.Email) ? true : false;
                 u.Email = form1.Email;
                 u.Rol = form1.Rol;
-                if (repositorioUsuario.Modificacion(u) > 0)
+                if (repositorioUsuario.Modificacion(u) > 0 && cambiaMail)
                 {
                     var identity = (ClaimsIdentity)User.Identity;
                     identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
@@ -153,8 +162,14 @@ namespace MvcInmo.Controllers
 
                 if (form1.AvatarFile != null && u.Id > 0)
                 {
+                    var ruta = @"wwwroot" + u.Avatar;
+                    if (System.IO.File.Exists(ruta))
+                    {
+                        System.IO.File.Delete(ruta);
+                    }
+                    var nbreRnd = Guid.NewGuid();
                     string path = @"wwwroot\Uploads";
-                    string fileName = "avatar_" + u.Id + Path.GetExtension(form1.AvatarFile.FileName);
+                    string fileName = "avatar_" + u.Id + nbreRnd + Path.GetExtension(form1.AvatarFile.FileName);
                     string pathCompleto = Path.Combine(path, fileName);
                     u.Avatar = @"/Uploads/" + fileName;
                     using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
@@ -196,6 +211,12 @@ namespace MvcInmo.Controllers
             string hashed;
             try
             {
+                if (clave == null)
+                {
+                    TempData["Mensaje"] = "La contraseña no puede estar vacía";
+                    return RedirectToAction(nameof(Perfil));
+                }
+
                 u = repositorioUsuario.ObtenerPorId(id);
                 if (claveNueva == confirmarNueva)
                 {
@@ -225,7 +246,12 @@ namespace MvcInmo.Controllers
                 {
                     u.Clave = claveNueva;
                     repositorioUsuario.Modificacion(u);
-                    TempData["Mensaje"] = "Contraseña actualizada!";
+                    TempData["Mensaje"] = "Contraseña actualizada";
+                }
+                else
+                {
+                    TempData["Mensaje"] = "Contraseña actual invalida";
+                    return RedirectToAction(nameof(Perfil));
                 }
 
                 return RedirectToAction(nameof(Perfil));
@@ -254,8 +280,17 @@ namespace MvcInmo.Controllers
             try
             {
                 // TODO: Add delete logic here
-                repositorioUsuario.Baja(id);
-                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                var u = repositorioUsuario.ObtenerPorId(id);
+                var ruta = @"wwwroot" + u.Avatar;
+
+                if (repositorioUsuario.Baja(id) > 0)
+                {
+                    if (System.IO.File.Exists(ruta))
+                    {
+                        System.IO.File.Delete(ruta);
+                    }
+                    TempData["Mensaje"] = "Eliminación realizada correctamente";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -328,6 +363,7 @@ namespace MvcInmo.Controllers
         {
             await HttpContext.SignOutAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme);
+            TempData["Mensaje"] = "Hasta pronto";
             return RedirectToAction("Index", "Home");
         }
 
