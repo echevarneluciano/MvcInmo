@@ -143,9 +143,12 @@ namespace MvcInmo.Controllers
         {
             try
             {
+                var deuda = repositorioPago.ObtenerDeuda(id);
+
                 var contrato = repositorioContrato.GetContrato(id);
                 ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
                 ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
+                ViewBag.deuda = deuda;
 
                 var intervaloF = contrato.FechaFin.Subtract(contrato.FechaInicio) / 30;
                 var intervaloA = DateTime.Now.Subtract(contrato.FechaInicio) / 30;

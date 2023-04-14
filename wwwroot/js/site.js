@@ -25,6 +25,18 @@ $(document).ready(function () {
     .appendTo(".tableplus thead");
 
   var table = $(".tableplus").DataTable({
+    language: {
+      lengthMenu: "Mostrar _MENU_ registros por página",
+      zeroRecords: "Nada que mostrar",
+      info: "Página _PAGE_ de _PAGES_",
+      infoEmpty: "No hay nada",
+      infoFiltered: "(filtered from _MAX_ total records)",
+      search: "Buscar:",
+      paginate: {
+        previous: "Pagina previa",
+        next: "Pagina siguiente",
+      },
+    },
     orderCellsTop: true,
     fixedHeader: true,
     initComplete: function () {
@@ -87,6 +99,11 @@ $(document).ready(function () {
       info: "Página _PAGE_ de _PAGES_",
       infoEmpty: "No hay nada",
       infoFiltered: "(filtered from _MAX_ total records)",
+      search: "Buscar:",
+      paginate: {
+        previous: "Pagina previa",
+        next: "Pagina siguiente",
+      },
     },
   });
 });

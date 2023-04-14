@@ -1,10 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MvcInmo.Models;
 
 public class Inquilino
 {
     public string? Nombre { get; set; }
+    [Display(Name = "Código")]
     public int Id { get; set; }
     public string? Apellido { get; set; }
+    [Display(Name = "DNI Inquilino")]
     public string? DNI { get; set; }
     public string? Telefono { get; set; }
     public string? Email { get; set; }

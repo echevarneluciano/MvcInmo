@@ -2,10 +2,13 @@
 
 @{
     ViewData["Title"] = "Index";
+    var deuda = ViewBag.deuda;
 }
 
 <h1>Lista de pagos</h1>
-
+<p>
+    <a asp-action="Create">Crear cupon manual</a>
+</p>
 <table class="tableplus">
     <thead>
         <tr>
@@ -19,13 +22,10 @@
                 @Html.DisplayNameFor(model => model.Mes)
             </th>
             <th>
-                Importe abonado
+                @Html.DisplayNameFor(model => model.contrato.Id)
             </th>
             <th>
-                Importe mensualidad
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContratoId)
+                @Html.DisplayNameFor(model => model.inquilino.DNI)
             </th>
             <th></th>
         </tr>
@@ -43,13 +43,10 @@
                 @Html.DisplayFor(modelItem => item.Mes)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Importe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.contrato.Precio)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.ContratoId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.inquilino.DNI)
             </td>
             <td>
                 @Html.ActionLink("Editar/Pagar", "Edit", new { id=item.Id}) |

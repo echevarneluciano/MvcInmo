@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var deuda=ViewBag.Deuda;
 }
 
 <h1>Detalles</h1>
@@ -41,10 +42,22 @@
             @Html.DisplayFor(model => model.contrato.Precio)
         </dd>
         <dt class = "col-sm-2">
+            Deuda a la fecha
+        </dt>
+        <dd class = "col-sm-10">
+            @deuda
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ContratoId)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ContratoId)
+        </dd>
+         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.inquilino.DNI)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.inquilino.DNI)
         </dd>
     </dl>
 </div>

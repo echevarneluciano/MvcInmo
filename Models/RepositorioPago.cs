@@ -81,12 +81,13 @@ public class RepositorioPago
         IList<Pago> res = new List<Pago>();
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = @"SELECT 
-					p.Id, Mes, FechaPagado, ContratoId, Importe, 
-                    c.Id, c.Precio   
-					FROM Pagos p
-                    INNER JOIN Contratos c 
-                    ON c.Id = p.ContratoId";
+            var query = @"SELECT p.Id, Mes, FechaPagado, ContratoId, Importe, 
+                        c.Id, c.Precio, c.InquilinoId, i.Id, i.DNI   
+                        FROM Pagos p
+                        INNER JOIN Contratos c 
+                        ON c.Id = p.ContratoId
+                        INNER	JOIN	inquilinos i
+                        ON	c.InquilinoId=i.Id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 //command.CommandType = CommandType.Text;
@@ -105,6 +106,11 @@ public class RepositorioPago
                         {
                             Id = reader.GetInt32(5),
                             Precio = reader.GetDecimal(6),
+                        },
+                        inquilino = new Inquilino()
+                        {
+                            Id = reader.GetInt32(8),
+                            DNI = reader.GetString(9),
                         }
                     };
                     res.Add(e);
@@ -122,10 +128,11 @@ public class RepositorioPago
         {
             string query = @"SELECT 
 					p.Id, Mes, FechaPagado, ContratoId, Importe, 
-                    c.Id, c.Precio   
+                    c.Id, c.Precio, c.InquilinoId, i.Id, i.DNI   
 					FROM Pagos p
                     INNER JOIN Contratos c 
                     ON c.Id = p.ContratoId
+                    INNER JOIN Inquilinos i ON c.InquilinoId=i.Id
 					WHERE p.Id=@id";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
@@ -146,6 +153,11 @@ public class RepositorioPago
                         {
                             Id = reader.GetInt32(5),
                             Precio = reader.GetDecimal(6),
+                        },
+                        inquilino = new Inquilino()
+                        {
+                            Id = reader.GetInt32(8),
+                            DNI = reader.GetString(9),
                         }
                     };
                 }
@@ -201,6 +213,31 @@ public class RepositorioPago
                 command.Parameters.AddWithValue("@fechaTerminado", fechaTerminado);
                 connection.Open();
                 res = command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+        return res;
+    }
+
+    public Double ObtenerDeuda(int idContrato)
+    {
+        Double res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            string query = @"SELECT SUM(Precio) - SUM(Importe) AS Deuda FROM pagos JOIN contratos 
+                ON ContratoId= contratos.Id
+                WHERE contratos.Id=@idContrato
+                AND FechaFin<CURDATE()";
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                //command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@idContrato", idContrato);
+                connection.Open();
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    res = (reader.IsDBNull(0)) ? 0 : reader.GetDouble(0);
+                }
                 connection.Close();
             }
         }

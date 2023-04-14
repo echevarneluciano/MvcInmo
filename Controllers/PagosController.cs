@@ -34,24 +34,62 @@ namespace MvcInmo.Controllers
         [Authorize]
         public ActionResult Details(int id)
         {
+            var deuda = rePago.ObtenerDeuda(id);
+            ViewBag.Deuda = deuda;
             var lista = rePago.ObtenerPorId(id);
             return View(lista);
         }
 
+        [Authorize]
         // GET: Pagos/Create
         public ActionResult Create()
         {
-            return View();
+            try
+            {
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                ViewBag.Contratos = reContrato.GetContratos();
+                return View();
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
         }
 
+        [Authorize]
         // POST: Pagos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Pago collection)
         {
+            Pago pago = new Pago();
             try
             {
-                // TODO: Add insert logic here
+                if (collection.FechaPagado == null)
+                {
+                    TempData["Mensaje"] = "Debe ingresar la fecha de pago";
+                    return RedirectToAction(nameof(Create));
+                }
+                if (collection.Importe == null)
+                {
+                    TempData["Mensaje"] = "Debe ingresar un importe mayor a cero";
+                    return RedirectToAction(nameof(Create));
+                }
+                if (collection.Mes == 0)
+                {
+                    TempData["Mensaje"] = "Debe ingresar N° de cuota";
+                    return RedirectToAction(nameof(Create));
+                }
+                pago.FechaPagado = collection.FechaPagado;
+                pago.Importe = collection.Importe;
+                pago.ContratoId = collection.ContratoId;
+                pago.Mes = collection.Mes;
+                if (rePago.Alta(pago) > 0)
+                {
+                    TempData["Mensaje"] = "Datos guardados correctamente";
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -134,24 +172,5 @@ namespace MvcInmo.Controllers
                 return View();
             }
         }
-
-
-        /*         // POST: Pagos/Buscar
-                [HttpPost]
-                [ValidateAntiForgeryToken]
-                public ActionResult Buscar(int id)
-                {
-                    try
-                    {
-                        // TODO: Add insert logic here
-                        var lista = rePago.ObtenerPorContrato(id);
-                        return Json(lista);
-                    }
-                    catch
-                    {
-                        return View();
-                    }
-                } */
-
     }
 }
