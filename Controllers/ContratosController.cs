@@ -138,17 +138,22 @@ namespace MvcInmo.Controllers
             }
         }
 
-        // GET: Contratos/Edit/5
         [Authorize]
-        public ActionResult Edit(int id)
+        public ActionResult Terminar(int id)
         {
             try
             {
                 var contrato = repositorioContrato.GetContrato(id);
-                ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
                 ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
-                ViewBag.Inmuebles = repositorioInmueble.GetInmuebles();
                 ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
+
+                var intervaloF = contrato.FechaFin.Subtract(contrato.FechaInicio) / 30;
+                var intervaloA = DateTime.Now.Subtract(contrato.FechaInicio) / 30;
+                if ((intervaloF / 2) > intervaloA)
+                {
+                    ViewBag.multa = contrato.Precio * 2;
+                }
+
                 return View(contrato);
             }
             catch (System.Exception)
@@ -159,25 +164,21 @@ namespace MvcInmo.Controllers
 
         }
 
-        // POST: Contratos/Edit/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit(int id, Contrato collection)
+        public ActionResult Terminar(int id, Contrato collection)
         {
             Contrato contrato = new Contrato();
             try
             {
                 contrato = repositorioContrato.GetContrato(id);
-                contrato.FechaInicio = collection.FechaInicio;
-                contrato.FechaFin = collection.FechaFin;
-                contrato.Precio = collection.Precio;
-                contrato.InquilinoId = collection.InquilinoId;
-                contrato.InmuebleId = collection.InmuebleId;
-                contrato.Id = id;
+                contrato.FechaFin = DateTime.Now;
                 if (repositorioContrato.Modificacion(contrato) > 0)
                 {
-                    TempData["Mensaje"] = "Datos guardados correctamente";
+                    repositorioPago.ModificacionPorContratoId(contrato.Id, DateTime.Now);
+                    TempData["Mensaje"] = "Contrato terminado con exito";
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -217,5 +218,82 @@ namespace MvcInmo.Controllers
                 return View();
             }
         }
+
+        [Authorize]
+        public ActionResult Renovar(int id)
+        {
+            try
+            {
+                if (TempData["Mensaje"] != null)
+                {
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                }
+                var contrato = repositorioContrato.GetContrato(id);
+                ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
+                ViewBag.InquilinoActual = repositorioInquilino.GetInquilino(contrato.InquilinoId);
+                ViewBag.Inmuebles = repositorioInmueble.GetInmuebles();
+                ViewBag.InmuebleActual = repositorioInmueble.GetInmueble(contrato.InmuebleId);
+                return View(contrato);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        // POST: Contratos/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Renovar(int id, Contrato collection)
+        {
+            Contrato contrato = new Contrato();
+            try
+            {
+                contrato = repositorioContrato.GetContrato(id);
+
+                if (collection.Precio <= 0 || collection.FechaFin == null)
+                {
+                    TempData["Mensaje"] = "Complete campos fecha y precio";
+                    return RedirectToAction(nameof(Renovar));
+                }
+                if (collection.FechaFin <= contrato.FechaFin)
+                {
+                    TempData["Mensaje"] = "La fecha de fin debe ser mayor a la fecha fin actual";
+                    return RedirectToAction(nameof(Renovar));
+                }
+
+                var fechai = contrato.FechaFin;
+                var fechaf = collection.FechaFin;
+                var diferencia = fechaf.Subtract(fechai);
+                var meses = diferencia.Days / 30;
+                if (meses == 0) { meses = 1; }
+                Console.WriteLine("Cantidad de meses: " + meses);
+
+                contrato.FechaFin = collection.FechaFin;
+                contrato.Precio = collection.Precio;
+
+                if (repositorioContrato.Modificacion(contrato) > 0)
+                {
+                    for (int i = 0; i < meses; i++)
+                    {
+                        var pago = new Pago();
+                        pago.Mes = i;
+                        pago.ContratoId = collection.Id;
+                        repositorioPago.Alta(pago);
+                    }
+                    TempData["Mensaje"] = "Datos guardados correctamente";
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
     }
+
 }

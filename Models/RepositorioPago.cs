@@ -186,4 +186,25 @@ public class RepositorioPago
         return res;
     }
 
+    public int ModificacionPorContratoId(int idContrato, DateTime fechaTerminado)
+    {
+        int res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            string query = @"UPDATE Pagos 
+					SET FechaPagado = @fechaTerminado     
+					WHERE ContratoId = @idContrato";
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                //command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@idContrato", idContrato);
+                command.Parameters.AddWithValue("@fechaTerminado", fechaTerminado);
+                connection.Open();
+                res = command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+        return res;
+    }
+
 }
