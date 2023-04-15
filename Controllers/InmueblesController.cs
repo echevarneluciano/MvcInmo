@@ -44,6 +44,10 @@ namespace MvcInmo.Controllers
         {
             try
             {
+                if (TempData.ContainsKey("Mensaje"))
+                {
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                }
                 ViewBag.Propietarios = repositorioPropietario.GetPropietarios();
                 return View();
             }
@@ -61,6 +65,13 @@ namespace MvcInmo.Controllers
         {
             try
             {
+                if (entidad.Direccion == null || entidad.Ambientes == null
+                || entidad.Superficie == null || entidad.Latitud == null
+                || entidad.Precio == null || entidad.Longitud == null)
+                {
+                    TempData["Mensaje"] = "Debe llenar todos los campos";
+                    return RedirectToAction(nameof(Create));
+                }
                 ViewBag.Propietarios = repositorioPropietario.GetPropietarios();
                 if (repositorioInmueble.Alta(entidad) > 0)
                 {

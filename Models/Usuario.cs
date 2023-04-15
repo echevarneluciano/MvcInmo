@@ -6,7 +6,7 @@ namespace MvcInmo.Models;
 public enum enRoles
 {
     Administrador = 1,
-    Empleado = 2,
+    Empleado = 0,
 }
 
 public class Usuario
@@ -31,7 +31,7 @@ public class Usuario
     //public string AvatarFileName { get; set; }
     public int Rol { get; set; }
     [NotMapped]//Para EF
-    public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";
+    public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "Empleado";
 
     public static IDictionary<int, string> ObtenerRoles()
     {

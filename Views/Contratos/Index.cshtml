@@ -57,11 +57,11 @@
                 @item.inmueble.ToString()
             </td>
             <td>
-                @Html.ActionLink("Renovar", "Renovar", new {  id=item.Id }) |
-                @Html.ActionLink("Terminar", "Terminar", new {  id=item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new { id=item.Id })
+                @Html.ActionLink("", "Renovar", new {  id=item.Id },new { @class = "fas fa-calendar-plus"})
+                @Html.ActionLink("", "Terminar", new {  id=item.Id },new { @class = "fas fa-calendar-minus"}) 
+                @Html.ActionLink("", "Details", new { id=item.Id },new { @class = "fas fa-plus"})
                 @if(User.IsInRole("Administrador")){  
-                @Html.ActionLink("Eliminar", "Delete", new { id=item.Id })
+                @Html.ActionLink("", "Delete", new { id=item.Id },new { @class = "fas fa-remove"})
                 }
             </td>
         </tr>

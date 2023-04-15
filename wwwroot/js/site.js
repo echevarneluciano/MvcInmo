@@ -52,7 +52,7 @@ $(document).ready(function () {
             $(api.column(colIdx).header()).index()
           );
           var title = $(cell).text();
-          $(cell).html('<input type="text" placeholder="' + title + '" />');
+          $(cell).html('<input type="text" placeholder="" />');
 
           // On every keypress in this input
           $(
