@@ -25,6 +25,14 @@ a:link, a:visited, a:active {
   text-decoration:none;
 }
 
+.tableplus {
+  table-layout: fixed
+}
+
+td {
+  word-wrap: break-word;
+}
+
 
 
 
