@@ -54,14 +54,24 @@
 				<span asp-validation-for="Estado" class="text-danger"></span>
 			</div><br>
             <div class="form-group">
-				<label class="control-label">Tipo de alquiler</label><br>
+				<label class="control-label">Tipo de alquiler</label>
 				<select class="elSelect" name="Tipo">
-                    <option value="@Model.Tipo">@(Model.Tipo)</option>
-					<option value="Comercial">Comercial</option>
-					<option value="Residencial">Residencial</option>
+                    <option value="Casa" selected>Casa</option>
+                    <option value="Deposito">Deposito</option>
+                    <option value="Local">Local</option>
+                    <option value="Departamento">Departamento</option>
 				</select>
-				<span asp-validation-for="PropietarioId" class="text-danger"></span>
-			</div><br>
+				<span asp-validation-for="Tipo" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+				<label class="control-label">Uso de inmueble</label>
+				<select class="elSelect" name="Uso">
+                    <option value="Comercial" selected>Comercial</option>
+                    <option value="Residencial">Residencial</option>
+				</select>
+				<span asp-validation-for="Uso" class="text-danger"></span>
+			</div>
+            <br>
             <div class="form-group">
 				<label class="control-label">Propietario</label><br>
 				<select class="elSelect" name="PropietarioId">

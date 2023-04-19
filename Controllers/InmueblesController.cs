@@ -30,6 +30,16 @@ namespace MvcInmo.Controllers
             return View(lista);
         }
 
+        [Authorize]
+        public ActionResult Propietario(int idPropietario)
+        {
+            var lista = repositorioInmueble.BuscarPorPropietario(idPropietario);
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
+            return View("Index", lista);
+        }
         // GET: Inmuebles/Details/5
         [Authorize]
         public ActionResult Details(int id)

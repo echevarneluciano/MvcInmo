@@ -19,12 +19,13 @@ public class Inmueble
     public int PropietarioId { get; set; }
     public int? Estado { get; set; }
     public Decimal? Precio { get; set; }
+    public String? Uso { get; set; }
 
     [ForeignKey(nameof(PropietarioId))]
     public Propietario? Duenio { get; set; }
     public override string ToString()
     {
-        return $"Id: {Id}, Direccion: {Direccion}";
+        return $"Codigo: {Id}, Direccion: {Direccion}";
     }
     public Inmueble() { }
 }

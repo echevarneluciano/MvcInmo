@@ -187,8 +187,8 @@ public class RepositorioContrato
         {
             string query = @$"SELECT c.Id FROM contratos c 
                            WHERE	c.InmuebleId=@id
-                           AND (c.FechaInicio BETWEEN @fechaInicio AND @fechaFin
-                           OR	c.FechaFin BETWEEN @fechaInicio AND @fechaFin);";
+                           AND (@fechaInicio BETWEEN c.FechaInicio AND c.FechaFin 
+                           OR @fechaFin	 BETWEEN c.FechaInicio AND c.FechaFin);";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.Parameters.Add("@id", MySqlDbType.Int16).Value = idInmueble;

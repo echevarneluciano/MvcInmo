@@ -46,10 +46,20 @@
             <div class="form-group">
 				<label class="control-label">Tipo de alquiler</label>
 				<select class="elSelect" name="Tipo">
+                    <option value="Casa" selected>Casa</option>
+                    <option value="Deposito">Deposito</option>
+                    <option value="Local">Local</option>
+                    <option value="Departamento">Departamento</option>
+				</select>
+				<span asp-validation-for="Tipo" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+				<label class="control-label">Uso de inmueble</label>
+				<select class="elSelect" name="Uso">
                     <option value="Comercial" selected>Comercial</option>
                     <option value="Residencial">Residencial</option>
 				</select>
-				<span asp-validation-for="Tipo" class="text-danger"></span>
+				<span asp-validation-for="Uso" class="text-danger"></span>
 			</div>
             <div class="form-group">
 				<label class="control-label">Propietario</label>
