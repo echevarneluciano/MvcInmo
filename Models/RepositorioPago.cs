@@ -17,14 +17,15 @@ public class RepositorioPago
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             string query = @"INSERT INTO Pagos 
-					(Mes, FechaPagado, ContratoId) 
-					VALUES (@mes, @fechapagado, @contratoid);
+					(Mes, FechaPagado, Importe, ContratoId) 
+					VALUES (@mes, @fechapagado, @importe, @contratoid);
 					SELECT LAST_INSERT_ID();";//devuelve el id insertado (LAST_INSERT_ID para mysql)
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 //command.CommandType = CommandType.Text;
                 command.Parameters.AddWithValue("@mes", e.Mes);
                 command.Parameters.AddWithValue("@fechapagado", e.FechaPagado);
+                command.Parameters.AddWithValue("@importe", e.Importe);
                 command.Parameters.AddWithValue("@contratoid", e.ContratoId);
                 connection.Open();
                 res = Convert.ToInt32(command.ExecuteScalar());
@@ -172,8 +173,14 @@ public class RepositorioPago
         IList<Pago> res = new List<Pago>();
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = @"SELECT Id, Mes, FechaPagado, ContratoId, Importe 
-					FROM Pagos WHERE ContratoId=@contratoid";
+            var query = @"SELECT p.Id, Mes, FechaPagado, ContratoId, Importe, 
+                  c.Id, c.Precio, c.InquilinoId, i.Id, i.DNI   
+                        FROM Pagos p
+                        INNER JOIN Contratos c 
+                        ON c.Id = ContratoId
+                        INNER	JOIN	inquilinos i
+                        ON	c.InquilinoId=i.Id
+					         WHERE ContratoId=@contratoid";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 //command.CommandType = CommandType.Text;
@@ -184,11 +191,21 @@ public class RepositorioPago
                 {
                     Pago e = new Pago
                     {
-                        Id = reader.GetInt32(nameof(Pago.Id)),
-                        Mes = reader.GetInt32(nameof(Pago.Mes)),
-                        FechaPagado = reader.GetDateTime(nameof(Pago.FechaPagado)),
-                        ContratoId = reader.GetInt32(nameof(Pago.ContratoId)),
-                        Importe = reader.GetDecimal(nameof(Pago.Importe)),
+                        Id = reader.GetInt32(0),
+                        Mes = reader.GetInt32(1),
+                        FechaPagado = (reader.IsDBNull(2)) ? null : reader.GetDateTime(2),
+                        ContratoId = reader.GetInt32(3),
+                        Importe = (reader.IsDBNull(4)) ? 0 : reader.GetDecimal(4),
+                        contrato = new Contrato()
+                        {
+                            Id = reader.GetInt32(5),
+                            Precio = reader.GetDecimal(6),
+                        },
+                        inquilino = new Inquilino()
+                        {
+                            Id = reader.GetInt32(8),
+                            DNI = reader.GetString(9),
+                        }
                     };
                     res.Add(e);
                 }

@@ -45,6 +45,18 @@ namespace MvcInmo.Controllers
             }
         }
 
+        [Authorize]
+        public ActionResult Inmueble(int id)
+        {
+            var lista = repositorioContrato.GetContratosPorInmueble(id);
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
+            ViewBag.Inquilino = id;
+            return View("Index", lista);
+        }
+
         // GET: Contratos/Details/5
         [Authorize]
         public ActionResult Details(int id)
@@ -66,7 +78,7 @@ namespace MvcInmo.Controllers
 
         // GET: Contratos/Create
         [Authorize]
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
             try
             {
@@ -76,6 +88,7 @@ namespace MvcInmo.Controllers
                     ViewBag.Mensaje = TempData["Mensaje"];
                 ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
                 ViewBag.Inmuebles = repositorioInmueble.GetInmueblesDisponibles();
+                ViewBag.Inmueble = id;
                 return View();
             }
             catch (System.Exception)

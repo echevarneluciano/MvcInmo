@@ -30,6 +30,19 @@ namespace MvcInmo.Controllers
             return View(lista);
         }
 
+        [Authorize]
+        public ActionResult Contrato(int id)
+        {
+            var lista = rePago.ObtenerPorContrato(id);
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
+            ViewBag.Contrato = id;
+            return View("Index", lista);
+        }
+
+
         // GET: Pagos/Details/5
         [Authorize]
         public ActionResult Details(int id)
@@ -42,13 +55,21 @@ namespace MvcInmo.Controllers
 
         [Authorize]
         // GET: Pagos/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
             try
             {
                 if (TempData.ContainsKey("Mensaje"))
                     ViewBag.Mensaje = TempData["Mensaje"];
-                ViewBag.Contratos = reContrato.GetContratos();
+                if (id == 0)
+                {
+                    ViewBag.Contratos = reContrato.GetContratos();
+                }
+                else
+                {
+                    ViewBag.Contrato = reContrato.GetContrato(id);
+                }
+
                 return View();
             }
             catch (System.Exception)
@@ -84,7 +105,7 @@ namespace MvcInmo.Controllers
                 }
                 pago.FechaPagado = collection.FechaPagado;
                 pago.Importe = collection.Importe;
-                pago.ContratoId = collection.ContratoId;
+                pago.ContratoId = (collection.ContratoId == 0) ? collection.Id : collection.ContratoId;
                 pago.Mes = collection.Mes;
                 if (rePago.Alta(pago) > 0)
                 {

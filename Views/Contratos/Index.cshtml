@@ -2,12 +2,18 @@
 
 @{
     ViewData["Title"] = "Index";
+    var Inquilino = ViewBag.Inquilino;
 }
 
 <h1>Lista de contratos</h1>
 
 <p>
-    <a asp-action="Create"class="fa-solid fa-file-signature fa-2xl"></a>&nbsp Crear contrato
+    @if(Inquilino!=null){
+        <a asp-action="Create" asp-route-id=@Inquilino class="fa-solid fa-file-signature fa-2xl"></a>
+    }else{
+    <a asp-action="Create"class="fa-solid fa-file-signature fa-2xl"></a>
+    }
+    &nbsp Crear contrato
 </p>
 <table class="tableplus">
     <thead>
@@ -60,6 +66,7 @@
                 @Html.ActionLink("", "Renovar", new {  id=item.Id },new { @class = "fas fa-calendar-plus"})
                 @Html.ActionLink("", "Terminar", new {  id=item.Id },new { @class = "fas fa-calendar-minus"}) 
                 @Html.ActionLink("", "Details", new { id=item.Id },new { @class = "fas fa-plus"})
+                <a href="/Pagos/Contrato/@item.Id" class="fa-solid fa-file-invoice-dollar"></a>
                 @if(User.IsInRole("Administrador")){  
                 @Html.ActionLink("", "Delete", new { id=item.Id },new { @class = "fas fa-remove"})
                 }

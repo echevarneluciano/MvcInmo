@@ -70,7 +70,7 @@ public class RepositorioInmueble
                 command.Parameters.AddWithValue("@superficie", entidad.Superficie);
                 command.Parameters.AddWithValue("@latitud", entidad.Latitud);
                 command.Parameters.AddWithValue("@longitud", entidad.Longitud);
-                command.Parameters.AddWithValue("@propietarioId", entidad.PropietarioId);
+                command.Parameters.AddWithValue("@propietarioId", (entidad.Id == 0) ? entidad.PropietarioId : entidad.Id);
                 command.Parameters.AddWithValue("@Tipo", entidad.Tipo);
                 command.Parameters.AddWithValue("@precio", entidad.Precio);
                 command.Parameters.AddWithValue("@Uso", entidad.Uso);
@@ -182,7 +182,7 @@ public class RepositorioInmueble
         Inmueble entidad = null;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            string query = @$"
+            string query = @"
 					SELECT i.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId, 
                     Tipo, p.Nombre, p.Apellido, Estado, Precio, Uso 
 					FROM Inmuebles i JOIN Propietarios p ON i.PropietarioId = p.Id
@@ -196,22 +196,22 @@ public class RepositorioInmueble
                 {
                     entidad = new Inmueble
                     {
-                        Id = reader.GetInt32("i.Id"),
-                        Direccion = reader.GetString("Direccion"),
-                        Ambientes = reader.GetInt32("Ambientes"),
-                        Superficie = reader.GetInt32("Superficie"),
-                        Latitud = reader.GetDecimal("Latitud"),
-                        Longitud = reader.GetDecimal("Longitud"),
-                        Tipo = reader.GetString("Tipo"),
-                        PropietarioId = reader.GetInt32("PropietarioId"),
-                        Estado = reader.GetInt32("Estado"),
-                        Precio = reader.GetDecimal("Precio"),
-                        Uso = reader.GetString("Uso"),
+                        Id = reader.GetInt32(0),
+                        Direccion = reader.GetString(1),
+                        Ambientes = reader.GetInt32(2),
+                        Superficie = reader.GetInt32(3),
+                        Latitud = reader.GetDecimal(4),
+                        Longitud = reader.GetDecimal(5),
+                        Tipo = reader.GetString(7),
+                        PropietarioId = reader.GetInt32(6),
+                        Estado = reader.GetInt32(10),
+                        Precio = reader.GetDecimal(11),
+                        Uso = reader.GetString(12),
                         Duenio = new Propietario
                         {
-                            Id = reader.GetInt32("p.Id"),
-                            Nombre = reader.GetString("p.Nombre"),
-                            Apellido = reader.GetString("p.Apellido"),
+                            Id = reader.GetInt32(6),
+                            Nombre = reader.GetString(8),
+                            Apellido = reader.GetString(9),
                         }
                     };
                     res.Add(entidad);

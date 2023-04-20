@@ -3,11 +3,17 @@
 @{
     ViewData["Title"] = "Index";
     var deuda = ViewBag.deuda;
+    var contrato = ViewBag.Contrato;
 }
 
 <h1>Lista de pagos</h1>
 <p>
-    <a asp-action="Create" class="fa-solid fa-file-invoice-dollar fa-2xl"></a>&nbsp Cupon manual 
+     @if(contrato!=null){
+        <a asp-action="Create" asp-route-id=@contrato class="fa-solid fa-file-invoice-dollar fa-2xl"></a>
+    }else{
+    <a asp-action="Create" class="fa-solid fa-file-invoice-dollar fa-2xl"></a>
+    }
+    &nbsp Cupon manual 
 </p>
 <table class="tableplus">
     <thead>
