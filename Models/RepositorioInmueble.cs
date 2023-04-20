@@ -269,6 +269,61 @@ public class RepositorioInmueble
         return Inmuebles;
     }
 
+    public IList<Inmueble> GetInmueblesDisponiblesPorFechas(DateTime desde, DateTime hasta)
+    {
+        List<Inmueble> Inmuebles = new List<Inmueble>();
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            var query = @"SELECT distinct i.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, 
+            PropietarioId, Tipo, Estado, i.Precio, Uso, p.Nombre, p.Apellido  
+            FROM inmuebles i
+            INNER JOIN propietarios p ON i.PropietarioId = p.Id
+            LEFT JOIN contratos c ON i.Id = c.InmuebleId
+            WHERE c.Id IS NULL
+            OR i.Id NOT IN (SELECT InmuebleId    
+            FROM Contratos c 
+            INNER JOIN inmuebles i
+			ON  c.InmuebleId = i.Id
+			WHERE @desde BETWEEN c.FechaInicio AND c.FechaFin 
+            OR @hasta BETWEEN c.FechaInicio AND c.FechaFin)";
+            using (var command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.Add("@desde", MySqlDbType.Date).Value = desde;
+                command.Parameters.Add("@hasta", MySqlDbType.Date).Value = hasta;
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Inmueble Inmueble = new Inmueble
+                        {
+                            Id = reader.GetInt32(0),
+                            Direccion = reader.GetString(1),
+                            Ambientes = reader.GetInt32(2),
+                            Superficie = reader.GetInt32(3),
+                            Latitud = reader.GetDecimal(4),
+                            Longitud = reader.GetDecimal(5),
+                            PropietarioId = reader.GetInt32(6),
+                            Tipo = reader.GetString(7),
+                            Estado = reader.GetInt32(8),
+                            Precio = (reader.IsDBNull(9)) ? 0 : reader.GetDecimal(9),//reader.GetDouble(11),
+                            Uso = reader.GetString(10),
+                            Duenio = new Propietario
+                            {
+                                Id = reader.GetInt32(6),
+                                Nombre = reader.GetString(11),
+                                Apellido = reader.GetString(12),
+                            }
+                        };
+                        Inmuebles.Add(Inmueble);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return Inmuebles;
+    }
+
 }
 
 

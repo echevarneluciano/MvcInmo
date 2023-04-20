@@ -39,6 +39,10 @@ namespace MvcInmo.Controllers
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
             ViewBag.Contrato = id;
+            if (lista.Count() != 0)
+            {
+                ViewBag.Mensaje = "Cupones del contrato: " + lista[0].contrato.ToString();
+            }
             return View("Index", lista);
         }
 

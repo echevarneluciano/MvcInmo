@@ -30,6 +30,35 @@ namespace MvcInmo.Controllers
             return View(lista);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Disponibles(DateTime fechaInicio, DateTime fechaFin)
+        {
+            try
+            {
+                var FechaInicio = fechaInicio;
+                var FechaFin = fechaFin;
+
+                var lista = repositorioInmueble.GetInmueblesDisponiblesPorFechas(FechaInicio, FechaFin);
+
+                if (TempData.ContainsKey("Id"))
+                    ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                if (lista.Count != 0)
+                {
+                    ViewBag.Mensaje = "Inmuebles disponibles entre: " + FechaInicio.ToString("dd/MM/yyyy") + " y " + FechaFin.ToString("dd/MM/yyyy");
+                }
+                return View("Index", lista);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+
         [Authorize]
         public ActionResult Propietario(int id)
         {
@@ -39,6 +68,10 @@ namespace MvcInmo.Controllers
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
             ViewBag.Propietario = id;
+            if (lista.Count != 0)
+            {
+                ViewBag.Mensaje = "Inmuebles del propietario: " + lista[0].Duenio.Nombre + " " + lista[0].Duenio.Apellido;
+            }
             return View("Index", lista);
         }
         // GET: Inmuebles/Details/5

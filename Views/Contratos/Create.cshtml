@@ -5,6 +5,7 @@
     var ltaInquilinos = (IList<Inquilino>)ViewBag.Inquilinos;
     var ltaInmuebles = (IList<Inmueble>)ViewBag.Inmuebles;
     var inmueble = ViewBag.Inmueble;
+    var precio=ViewBag.Precio;
 }
 
 <h1>Crear</h1>
@@ -46,14 +47,14 @@
 				<select class="elSelect" name="InmuebleId">
 					@foreach (var item in ltaInmuebles)
 					{
-						<option value="@item.Id">@(item.ToString())</option>
+						<option value="@item.Id">@(item.ToString()+", Precio sugerido: "+item.Precio)</option>;
 					}
 				</select>
 				<span asp-validation-for="InmuebleId" class="text-danger"></span>
 			</div>
             }else{
                 <div class="form-group">
-                <label asp-for="InmuebleId" class="control-label">Codigo inmueble</label>
+                <label asp-for="InmuebleId" class="control-label">Codigo inmueble, precio sugerido: @precio</label>
                 <input asp-for="InmuebleId" class="form-control" value=@inmueble disabled/>
                 <span asp-validation-for="InmuebleId" class="text-danger"></span>
                 </div>

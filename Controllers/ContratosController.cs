@@ -60,6 +60,10 @@ namespace MvcInmo.Controllers
                     ViewBag.Id = TempData["Id"];
                 if (TempData.ContainsKey("Mensaje"))
                     ViewBag.Mensaje = TempData["Mensaje"];
+                if (lista.Count != 0)
+                {
+                    ViewBag.Mensaje = "Contratos vigentes desde: " + FechaInicio.ToString("dd/MM/yyyy") + " y " + FechaFin.ToString("dd/MM/yyyy");
+                }
                 return View("Index", lista);
             }
             catch (System.Exception)
@@ -78,6 +82,10 @@ namespace MvcInmo.Controllers
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
             ViewBag.Inquilino = id;
+            if (lista.Count != 0)
+            {
+                ViewBag.Mensaje = "Contratos del inmueble: " + lista[0].inmueble.ToString();
+            }
             return View("Index", lista);
         }
 
@@ -113,6 +121,11 @@ namespace MvcInmo.Controllers
                 ViewBag.Inquilinos = repositorioInquilino.GetInquilinos();
                 ViewBag.Inmuebles = repositorioInmueble.GetInmueblesDisponibles();
                 ViewBag.Inmueble = id;
+                if (id != 0)
+                {
+                    var inmueble = repositorioInmueble.GetInmueble(id);
+                    ViewBag.Precio = inmueble.Precio;
+                }
                 return View();
             }
             catch (System.Exception)
