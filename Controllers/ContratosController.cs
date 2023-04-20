@@ -44,6 +44,30 @@ namespace MvcInmo.Controllers
                 throw;
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Vigentes(DateTime fechaInicio, DateTime fechaFin)
+        {
+            try
+            {
+                var FechaInicio = fechaInicio;
+                var FechaFin = fechaFin;
+
+                var lista = repositorioContrato.GetContratosVigentes(FechaInicio, FechaFin);
+
+                if (TempData.ContainsKey("Id"))
+                    ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                return View("Index", lista);
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
 
         [Authorize]
         public ActionResult Inmueble(int id)
