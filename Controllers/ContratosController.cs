@@ -306,6 +306,15 @@ namespace MvcInmo.Controllers
             try
             {
                 contrato = repositorioContrato.GetContrato(id);
+                var contratoAterminar = new Contrato()
+                {
+                    FechaInicio = contrato.FechaInicio,
+                    FechaFin = DateTime.Now,
+                    InquilinoId = contrato.InquilinoId,
+                    InmuebleId = contrato.InmuebleId,
+                    Precio = contrato.Precio,
+                    Id = contrato.Id,
+                };
 
                 if (collection.Precio <= 0 || collection.FechaFin == null)
                 {
@@ -317,8 +326,13 @@ namespace MvcInmo.Controllers
                     TempData["Mensaje"] = "La fecha de fin debe ser mayor a la fecha fin actual";
                     return RedirectToAction(nameof(Renovar));
                 }
+                if (collection.FechaInicio >= collection.FechaFin)
+                {
+                    TempData["Mensaje"] = "La fecha fin debe ser mayor a la fecha inicio";
+                    return RedirectToAction(nameof(Renovar));
+                }
 
-                var fechai = contrato.FechaFin;
+                var fechai = collection.FechaInicio;
                 var fechaf = collection.FechaFin;
                 var diferencia = fechaf.Subtract(fechai);
                 var meses = diferencia.Days / 30;
@@ -326,18 +340,25 @@ namespace MvcInmo.Controllers
                 Console.WriteLine("Cantidad de meses: " + meses);
 
                 contrato.FechaFin = collection.FechaFin;
+                contrato.FechaInicio = collection.FechaInicio;
                 contrato.Precio = collection.Precio;
+                contrato.Id = 0;
 
-                if (repositorioContrato.Modificacion(contrato) > 0)
+                if (repositorioContrato.Alta(contrato) > 0)
                 {
                     for (int i = 0; i < meses; i++)
                     {
                         var pago = new Pago();
                         pago.Mes = i;
-                        pago.ContratoId = collection.Id;
+                        pago.ContratoId = contrato.Id;
                         repositorioPago.Alta(pago);
                     }
-                    TempData["Mensaje"] = "Datos guardados correctamente";
+                    if (repositorioContrato.Modificacion(contratoAterminar) > 0)
+                    {
+                        repositorioPago.ModificacionPorContratoId(contratoAterminar.Id, DateTime.Now);
+                    }
+
+                    TempData["Mensaje"] = "Contrato renovado con exito";
                 }
                 return RedirectToAction(nameof(Index));
             }
