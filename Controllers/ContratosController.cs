@@ -146,10 +146,11 @@ namespace MvcInmo.Controllers
             {
                 // TODO: Add insert logic here
                 Contrato controlFecha;
-                controlFecha = repositorioContrato.compruebaFechas(collection.InmuebleId, collection.FechaInicio, collection.FechaFin);
+                var inmueble = (collection.InmuebleId == 0) ? collection.Id : collection.InmuebleId;
+                controlFecha = repositorioContrato.compruebaFechas(inmueble, collection.FechaInicio, collection.FechaFin);
                 if (controlFecha != null)
                 {
-                    TempData["Mensaje"] = "El inmueble id: " + collection.InmuebleId + " tiene contrato en la fecha seleccionada";
+                    TempData["Mensaje"] = "El inmueble id: " + inmueble + " tiene contrato en la fecha seleccionada";
                     return RedirectToAction(nameof(Create));
                 }
                 if (collection.FechaFin < collection.FechaInicio)
