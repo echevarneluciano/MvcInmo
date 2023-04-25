@@ -32,12 +32,9 @@ CREATE TABLE IF NOT EXISTS `contratos` (
   KEY `FK_contratos_inmuebles` (`InmuebleId`),
   CONSTRAINT `FK_contratos_inmuebles` FOREIGN KEY (`InmuebleId`) REFERENCES `inmuebles` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_contratos_inquilinos` FOREIGN KEY (`InquilinoId`) REFERENCES `inquilinos` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla inmobiliaria.contratos: ~9 rows (aproximadamente)
-INSERT INTO `contratos` (`Id`, `FechaInicio`, `FechaFin`, `Precio`, `InquilinoId`, `InmuebleId`) VALUES
-	(20, '2023-04-15 20:15:00', '2023-04-15 20:17:24', 2000.000000, 7, 32),
-	(21, '2023-04-22 20:17:00', '2023-08-16 20:17:00', 1500.000000, 7, 32);
+-- Volcando datos para la tabla inmobiliaria.contratos: ~0 rows (aproximadamente)
 
 -- Volcando estructura para tabla inmobiliaria.inmuebles
 CREATE TABLE IF NOT EXISTS `inmuebles` (
@@ -51,16 +48,16 @@ CREATE TABLE IF NOT EXISTS `inmuebles` (
   `Tipo` varchar(50) DEFAULT NULL,
   `Precio` decimal(20,6) DEFAULT NULL,
   `Estado` int(11) NOT NULL DEFAULT 1,
+  `Uso` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_inmuebles_propietarios` (`PropietarioId`),
   CONSTRAINT `FK_inmuebles_propietarios` FOREIGN KEY (`PropietarioId`) REFERENCES `propietarios` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla inmobiliaria.inmuebles: ~12 rows (aproximadamente)
-INSERT INTO `inmuebles` (`Id`, `Direccion`, `Ambientes`, `Superficie`, `Latitud`, `Longitud`, `PropietarioId`, `Tipo`, `Precio`, `Estado`) VALUES
-	(31, 'Juana Koslay 22', 3, 1255, 2222.000000, 3355.000000, 28, 'Comercial', 1258.000000, 0),
-	(32, 'Colon 1233', 2, 345, 3322.000000, 4444.000000, 29, 'Residencial', 2000.000000, 1),
-	(33, 'Rivadavia 2300', 1, 200, 3322.000000, 2222.000000, 29, 'Comercial', 1847.000000, 1);
+-- Volcando datos para la tabla inmobiliaria.inmuebles: ~2 rows (aproximadamente)
+INSERT INTO `inmuebles` (`Id`, `Direccion`, `Ambientes`, `Superficie`, `Latitud`, `Longitud`, `PropietarioId`, `Tipo`, `Precio`, `Estado`, `Uso`) VALUES
+	(43, 'Juana Koslay 22', 2, 20, 3311.000000, 2211.000000, 32, 'Casa', 1020.000000, 1, 'Comercial'),
+	(44, 'puertas del sol 3', 5, 123, 123.000000, 123.000000, 33, 'Deposito', 10000.000000, 1, 'Comercial');
 
 -- Volcando estructura para tabla inmobiliaria.inquilinos
 CREATE TABLE IF NOT EXISTS `inquilinos` (
@@ -71,12 +68,12 @@ CREATE TABLE IF NOT EXISTS `inquilinos` (
   `Telefono` varchar(50) NOT NULL DEFAULT '',
   `Email` varchar(50) NOT NULL,
   PRIMARY KEY (`Id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 -- Volcando datos para la tabla inmobiliaria.inquilinos: ~2 rows (aproximadamente)
 INSERT INTO `inquilinos` (`Id`, `DNI`, `Nombre`, `Apellido`, `Telefono`, `Email`) VALUES
-	(7, '212333322', 'Inquilino 1', 'Apellido i1', '02664477889', 'mail@gmail.com.ar'),
-	(8, '5588779', 'Inquilino 2 ', 'Ape2', '477887', 'este@mail.com.ar');
+	(10, '123456', 'Primer', 'Inquilino', '445566', 'inquilino1@gmail.com'),
+	(11, '556644', 'Segundo', 'Inqui', '4561236', 'segundo@gmail.com');
 
 -- Volcando estructura para tabla inmobiliaria.pagos
 CREATE TABLE IF NOT EXISTS `pagos` (
@@ -88,20 +85,9 @@ CREATE TABLE IF NOT EXISTS `pagos` (
   PRIMARY KEY (`Id`),
   KEY `FK_pagos_contratos` (`ContratoId`),
   CONSTRAINT `FK_pagos_contratos` FOREIGN KEY (`ContratoId`) REFERENCES `contratos` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla inmobiliaria.pagos: ~42 rows (aproximadamente)
-INSERT INTO `pagos` (`Id`, `Mes`, `FechaPagado`, `ContratoId`, `Importe`) VALUES
-	(52, 0, '2023-04-15 20:17:24', 20, NULL),
-	(53, 1, '2023-04-15 20:17:24', 20, NULL),
-	(54, 2, '2023-04-15 20:17:24', 20, NULL),
-	(55, 3, '2023-04-15 20:17:24', 20, NULL),
-	(56, 4, '2023-04-15 20:17:24', 20, NULL),
-	(57, 0, '2023-04-15 20:17:24', 20, NULL),
-	(58, 0, NULL, 21, NULL),
-	(59, 1, NULL, 21, NULL),
-	(60, 2, NULL, 21, NULL),
-	(61, 10, '2023-04-15 20:18:00', 21, NULL);
+-- Volcando datos para la tabla inmobiliaria.pagos: ~0 rows (aproximadamente)
 
 -- Volcando estructura para tabla inmobiliaria.propietarios
 CREATE TABLE IF NOT EXISTS `propietarios` (
@@ -113,12 +99,12 @@ CREATE TABLE IF NOT EXISTS `propietarios` (
   `Email` varchar(50) NOT NULL,
   `Clave` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla inmobiliaria.propietarios: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla inmobiliaria.propietarios: ~2 rows (aproximadamente)
 INSERT INTO `propietarios` (`Id`, `DNI`, `Nombre`, `Apellido`, `Telefono`, `Email`, `Clave`) VALUES
-	(28, '3312222', 'Propietario 1', 'Apellido 1', '4455897', 'prop@gmail.com', NULL),
-	(29, '43222111', 'Propietario 2', 'Apellido 2', '4778899', 'prop2@gmail.com2', NULL);
+	(32, '33097243', 'Luciano', 'Echevarne', '445566', 'luciano@gmail.com', NULL),
+	(33, '556688', 'Franco ', 'Echevarne', '456123', 'franco@gmail.com', NULL);
 
 -- Volcando estructura para tabla inmobiliaria.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -132,9 +118,9 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla inmobiliaria.usuarios: ~6 rows (aproximadamente)
+-- Volcando datos para la tabla inmobiliaria.usuarios: ~3 rows (aproximadamente)
 INSERT INTO `usuarios` (`Id`, `Rol`, `Nombre`, `Apellido`, `Email`, `Clave`, `Avatar`) VALUES
-	(4, 0, 'Lucas', 'Echevarne', 'empleado@empleado.com', '42cBSXesh0vNWSwhCy236yHd+V/P6mzEsNpySeUgShk=', '/Uploads/avatar_418c9950d-69aa-4b01-9e53-c57318114197.webp'),
+	(4, 0, 'Lucas', 'Echevarne', 'empleado@empleado.com', '42cBSXesh0vNWSwhCy236yHd+V/P6mzEsNpySeUgShk=', '/Uploads/avatar_46b50811d-8ca7-403d-91b2-f587b2faa2cc.webp'),
 	(11, 1, 'admin', 'admin', 'admin@admin.com', 'eia65qLim9UsFSfCqeMfSxBpLUb6Ec2hfdBC6NwSTIc=', '/Uploads/avatar_11.jpg');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
