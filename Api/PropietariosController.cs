@@ -122,6 +122,30 @@ namespace Inmobiliaria_.Net_Core.Api
             }
         }
 
+
+        [HttpPost("actualizar/{id}")]
+        public async Task<IActionResult> Actualizar(int id, [FromBody] Propietario propietario)
+        {
+            try
+            {
+                var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Id == id);
+                if (entidad != null)
+                {
+                    entidad.Nombre = propietario.Nombre;
+                    entidad.Apellido = propietario.Apellido;
+                    entidad.Email = propietario.Email;
+                    entidad.Telefono = propietario.Telefono;
+                    await contexto.SaveChangesAsync();
+                    return Ok(entidad);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // GET api/<controller>/5
         [HttpPost("email")]
         [AllowAnonymous]
