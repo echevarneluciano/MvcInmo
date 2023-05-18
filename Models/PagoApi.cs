@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MvcInmo.Models;
 
-public class Pago
+[Table("Pagos")]
+public class PagoApi
 {
     [Display(Name = "Código Pago")]
     public int Id { get; set; }
@@ -15,16 +16,16 @@ public class Pago
     public int ContratoId { get; set; }
     [ForeignKey(nameof(ContratoId))]
     public Decimal? Importe { get; set; }
-    public Contrato contrato { get; set; }
-    public Inquilino inquilino { get; set; }
-    public Pago(DateTime FechaPagado, int Mes, int ContratoId, Contrato contrato)
+    public ContratoApi contrato { get; set; }
+    //public Inquilino inquilino { get; set; }
+    public PagoApi(DateTime FechaPagado, int Mes, int ContratoId, ContratoApi contrato)
     {
         this.FechaPagado = FechaPagado;
         this.Mes = Mes;
         this.ContratoId = ContratoId;
         this.contrato = contrato;
     }
-    public Pago() { }
+    public PagoApi() { }
     public override string ToString()
     {
         return $"Identificador: {Id}, N°: {Mes}, Contrato Id: {ContratoId}";

@@ -28,4 +28,19 @@ public class Inmueble
         return $"Codigo: {Id}, Direccion: {Direccion}";
     }
     public Inmueble() { }
+    public Inmueble(int id, string? direccion, int? ambientes, int? superficie, decimal? latitud, decimal? longitud, string? tipo, int propietarioId, int? estado, decimal? precio, string? uso, Propietario? duenio)
+    {
+        this.Id = id;
+        this.Direccion = direccion;
+        this.Ambientes = ambientes;
+        this.Superficie = superficie;
+        this.Latitud = latitud;
+        this.Longitud = longitud;
+        this.Tipo = tipo;
+        this.PropietarioId = propietarioId;
+        this.Estado = estado;
+        this.Precio = precio;
+        this.Uso = uso;
+        this.Duenio = duenio;
+    }
 }

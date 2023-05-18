@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -14,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using MvcInmo.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -74,51 +76,51 @@ namespace Inmobiliaria_.Net_Core.Api
             }
         }
 
-        /*  // GET api/<controller>/5
-         [HttpGet("token")]
-         public async Task<IActionResult> Token()
-         {
-             try
-             { //este método si tiene autenticación, al entrar, generar clave aleatorio y enviarla por correo
-                 var perfil = new
-                 {
-                     Email = User.Identity.Name,
-                     Nombre = User.Claims.First(x => x.Type == "FullName").Value,
-                     Rol = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value
-                 };
-                 Random rand = new Random(Environment.TickCount);
-                 string randomChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
-                 string nuevaClave = "";
-                 for (int i = 0; i < 8; i++)
-                 {
-                     nuevaClave += randomChars[rand.Next(0, randomChars.Length)];
-                 }//!Falta hacer el hash a la clave y actualizar el usuario con dicha clave
-                 var message = new MimeKit.MimeMessage();
-                 message.To.Add(new MailboxAddress(perfil.Nombre, perfil.Email));
-                 message.From.Add(new MailboxAddress("Sistema", config["SMTPUser"]));
-                 message.Subject = "Prueba de Correo desde API";
-                 message.Body = new TextPart("html")
-                 {
-                     Text = @$"<h1>Hola</h1>
+        // GET api/<controller>/5
+        [HttpGet("token")]
+        public async Task<IActionResult> Token()
+        {
+            try
+            { //este método si tiene autenticación, al entrar, generar clave aleatorio y enviarla por correo
+                var perfil = new
+                {
+                    Email = User.Identity.Name,
+                    Nombre = User.Claims.First(x => x.Type == "FullName").Value,
+                    Rol = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value
+                };
+                Random rand = new Random(Environment.TickCount);
+                string randomChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
+                string nuevaClave = "";
+                for (int i = 0; i < 8; i++)
+                {
+                    nuevaClave += randomChars[rand.Next(0, randomChars.Length)];
+                }//!Falta hacer el hash a la clave y actualizar el usuario con dicha clave
+                var message = new MimeKit.MimeMessage();
+                message.To.Add(new MailboxAddress(perfil.Nombre, perfil.Email));
+                message.From.Add(new MailboxAddress("Sistema", config["SMTPUser"]));
+                message.Subject = "Prueba de Correo desde API";
+                message.Body = new TextPart("html")
+                {
+                    Text = @$"<h1>Hola</h1>
                      <p>¡Bienvenido, {perfil.Nombre}!</p>",//falta enviar la clave generar (sin hashear)
-                 };
-                 message.Headers.Add("Encabezado", "Valor");//solo si hace falta
-                 MailKit.Net.Smtp.SmtpClient client = new SmtpClient();
-                 client.ServerCertificateValidationCallback = (object sender,
-                     System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-                     System.Security.Cryptography.X509Certificates.X509Chain chain,
-                     System.Net.Security.SslPolicyErrors sslPolicyErrors) =>
-                 { return true; };
-                 client.Connect("smtp.gmail.com", 465, MailKit.Security.SecureSocketOptions.Auto);
-                 client.Authenticate(config["SMTPUser"], config["SMTPPass"]);//estas credenciales deben estar en el user secrets
-                 await client.SendAsync(message);
-                 return Ok(perfil);
-             }
-             catch (Exception ex)
-             {
-                 return BadRequest(ex.Message);
-             }
-         } */
+                };
+                message.Headers.Add("Encabezado", "Valor");//solo si hace falta
+                MailKit.Net.Smtp.SmtpClient client = new SmtpClient();
+                client.ServerCertificateValidationCallback = (object sender,
+                    System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                    System.Security.Cryptography.X509Certificates.X509Chain chain,
+                    System.Net.Security.SslPolicyErrors sslPolicyErrors) =>
+                { return true; };
+                client.Connect("smtp.gmail.com", 465, MailKit.Security.SecureSocketOptions.Auto);
+                client.Authenticate(config["SMTPUser"], config["SMTPPass"]);//estas credenciales deben estar en el user secrets
+                await client.SendAsync(message);
+                return Ok(perfil);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         // GET api/<controller>/5
         [HttpPost("email")]
@@ -157,7 +159,7 @@ namespace Inmobiliaria_.Net_Core.Api
         // POST api/<controller>/login
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromForm] LoginView loginView)
+        public async Task<IActionResult> Login([FromBody] LoginView loginView)
         {
             try
             {

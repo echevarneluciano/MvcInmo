@@ -16,11 +16,11 @@ namespace MvcInmo.Api
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class InmueblesController : Controller
+    public class ContratosController : Controller
     {
         private readonly DataContext contexto;
 
-        public InmueblesController(DataContext contexto)
+        public ContratosController(DataContext contexto)
         {
             this.contexto = contexto;
         }
@@ -32,14 +32,13 @@ namespace MvcInmo.Api
             try
             {
                 var usuario = User.Identity.Name;
-                return Ok(contexto.Inmuebles.Include(e => e.Duenio).Where(e => e.Duenio.Email == usuario));
+                return Ok(contexto.ContratosApis.Include(e => e.Inmueble).ThenInclude(e => e.Duenio).Where(e => e.Inmueble.Duenio.Email == usuario));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
         // GET api/<controller>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
