@@ -20,6 +20,7 @@ public class Inmueble
     public int? Estado { get; set; }
     public Decimal? Precio { get; set; }
     public String? Uso { get; set; }
+    public string? Imagen { get; set; }
 
     [ForeignKey(nameof(PropietarioId))]
     public Propietario? Duenio { get; set; }
@@ -28,7 +29,7 @@ public class Inmueble
         return $"Codigo: {Id}, Direccion: {Direccion}";
     }
     public Inmueble() { }
-    public Inmueble(int id, string? direccion, int? ambientes, int? superficie, decimal? latitud, decimal? longitud, string? tipo, int propietarioId, int? estado, decimal? precio, string? uso, Propietario? duenio)
+    public Inmueble(int id, string? direccion, int? ambientes, int? superficie, decimal? latitud, decimal? longitud, string? tipo, int propietarioId, int? estado, decimal? precio, string? uso, Propietario? duenio, string? imagen)
     {
         this.Id = id;
         this.Direccion = direccion;
@@ -42,5 +43,6 @@ public class Inmueble
         this.Precio = precio;
         this.Uso = uso;
         this.Duenio = duenio;
+        this.Imagen = imagen;
     }
 }

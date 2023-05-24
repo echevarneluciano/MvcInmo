@@ -123,12 +123,12 @@ namespace Inmobiliaria_.Net_Core.Api
         }
 
 
-        [HttpPost("actualizar/{id}")]
-        public async Task<IActionResult> Actualizar(int id, [FromBody] Propietario propietario)
+        [HttpPut("actualizar")]
+        public async Task<IActionResult> Actualizar([FromBody] Propietario propietario)
         {
             try
             {
-                var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Id == id);
+                var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == User.Identity.Name);
                 if (entidad != null)
                 {
                     entidad.Nombre = propietario.Nombre;

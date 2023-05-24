@@ -139,5 +139,27 @@ namespace MvcInmo.Api
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("actualizar")]
+        public async Task<IActionResult> Actualizar([FromBody] Inmueble inmueble)
+        {
+            try
+            {
+                var entidad = await contexto.Inmuebles.SingleOrDefaultAsync(x => x.Id == inmueble.Id);
+                if (entidad != null)
+                {
+                    entidad.Estado = inmueble.Estado == 1 ? 0 : 1;
+                    await contexto.SaveChangesAsync();
+                    return Ok(entidad);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
+
 }

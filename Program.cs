@@ -69,8 +69,8 @@ builder.Services.AddDbContext<DataContext>(
 var app = builder.Build();
 
 //builder.WebHost.UseUrls("http://localhost:5000", "https://localhost:5001")//permite escuchar SOLO peticiones locales
-builder.WebHost.UseUrls("http://localhost:5200", "http://*:5500");//permite escuchar peticiones locales y remotas ,"http://192.168.15.31:5200"
-
+//builder.WebHost.UseUrls("http://localhost:5200", "http://*:5500", "http://10.120.10.172:5200");//permite escuchar peticiones locales y remotas 
+builder.WebHost.UseUrls("http://localhost:5200", "http://*:5500", "http://192.168.15.31:5200");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

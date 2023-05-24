@@ -12,7 +12,8 @@ public class Propietario
     public string? Telefono { get; set; }
     public string? Email { get; set; }
     public string? Clave { get; set; }
-    public Propietario(string Nombre, string Apellido, string DNI, string Telefono, string Email, string Clave)
+    public string? Avatar { get; set; }
+    public Propietario(string Nombre, string Apellido, string DNI, string Telefono, string Email, string Clave, string Avatar)
     {
         this.Nombre = Nombre;
         this.Apellido = Apellido;
@@ -20,6 +21,7 @@ public class Propietario
         this.Telefono = Telefono;
         this.Email = Email;
         this.Clave = Clave;
+        this.Avatar = Avatar;
     }
     public Propietario() { }
     public override string ToString()
