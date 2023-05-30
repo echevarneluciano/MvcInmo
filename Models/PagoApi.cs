@@ -11,19 +11,20 @@ public class PagoApi
     [Display(Name = "Fecha de pago")]
     public DateTime? FechaPagado { get; set; }
     [Display(Name = "N° Cuota")]
-    public int Mes { get; set; }
+    public int? Mes { get; set; }
     [Display(Name = "Código Contrato")]
-    public int ContratoId { get; set; }
+    public int? ContratoId { get; set; }
     [ForeignKey(nameof(ContratoId))]
-    public Decimal? Importe { get; set; }
-    public ContratoApi contrato { get; set; }
+    public int? Importe { get; set; }
+    public ContratoApi? contrato { get; set; }
     //public Inquilino inquilino { get; set; }
-    public PagoApi(DateTime FechaPagado, int Mes, int ContratoId, ContratoApi contrato)
+    public PagoApi(DateTime FechaPagado, int Mes, int ContratoId, ContratoApi contrato, int id)
     {
         this.FechaPagado = FechaPagado;
         this.Mes = Mes;
         this.ContratoId = ContratoId;
         this.contrato = contrato;
+        this.Id = id;
     }
     public PagoApi() { }
     public override string ToString()

@@ -40,13 +40,13 @@ namespace MvcInmo.Api
             }
         }
         // GET api/<controller>/5
-        [HttpGet("contrato/{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpPost("contrato")]
+        public async Task<IActionResult> porContrato([FromBody] ContratoApi contrato)
         {
             try
             {
-                var usuario = User.Identity.Name;
-                return Ok(contexto.PagosApis.Include(e => e.contrato).Where(e => e.contrato.Id == id));
+                var idContrato = contrato.Id;
+                return Ok(contexto.PagosApis.Include(e => e.contrato).Where(e => e.ContratoId == idContrato).Include(e => e.contrato.Inmueble));
             }
             catch (Exception ex)
             {
@@ -132,6 +132,21 @@ namespace MvcInmo.Api
                     return Ok();
                 }
                 return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //pagos de contrato activo del propietario 
+        [HttpGet("contratos/propietario")]
+        public async Task<IActionResult> pagosDeContratos()
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+                return Ok(contexto.PagosApis.Include(e => e.contrato).ThenInclude(e => e.Inmueble).ThenInclude(e => e.Duenio).Where(e => (e.contrato.Inmueble.Duenio.Email == usuario) && (e.contrato.FechaFin > DateTime.Now)));
             }
             catch (Exception ex)
             {

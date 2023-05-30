@@ -32,7 +32,7 @@ namespace MvcInmo.Api
             try
             {
                 var usuario = User.Identity.Name;
-                return Ok(contexto.ContratosApis.Include(e => e.Inmueble).ThenInclude(e => e.Duenio).Where(e => e.Inmueble.Duenio.Email == usuario));
+                return Ok(contexto.ContratosApis.Include(e => e.Inmueble).ThenInclude(e => e.Duenio).Where(e => (e.Inmueble.Duenio.Email == usuario) && (e.FechaFin >= DateTime.Now)).Include(e => e.Inquilino));
             }
             catch (Exception ex)
             {
