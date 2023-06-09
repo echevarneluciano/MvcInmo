@@ -43,16 +43,7 @@ namespace Inmobiliaria_.Net_Core.Api
         {
             try
             {
-                /*contexto.Inmuebles
-					.Include(x => x.Duenio)
-					.Where(x => x.Duenio.Nombre == "")//.ToList() => lista de inmuebles
-					.Select(x => x.Duenio)
-					.ToList();//lista de propietarios*/
                 var usuario = User.Identity.Name;
-                /*contexto.Contratos.Include(x => x.Inquilino).Include(x => x.Inmueble).ThenInclude(x => x.Duenio)
-					.Where(c => c.Inmueble.Duenio.Email....);*/
-                /*var res = contexto.Propietarios.Select(x => new { x.Nombre, x.Apellido, x.Email })
-					.SingleOrDefault(x => x.Email == usuario);*/
                 return await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == usuario);
             }
             catch (Exception ex)
@@ -61,68 +52,7 @@ namespace Inmobiliaria_.Net_Core.Api
             }
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            try
-            {
-                var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Id == id);
-                return entidad != null ? Ok(entidad) : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET api/<controller>/5
-        [HttpGet("token")]
-        public async Task<IActionResult> Token()
-        {
-            try
-            { //este método si tiene autenticación, al entrar, generar clave aleatorio y enviarla por correo
-                var perfil = new
-                {
-                    Email = User.Identity.Name,
-                    Nombre = User.Claims.First(x => x.Type == "FullName").Value,
-                    Rol = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value
-                };
-                Random rand = new Random(Environment.TickCount);
-                string randomChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
-                string nuevaClave = "";
-                for (int i = 0; i < 8; i++)
-                {
-                    nuevaClave += randomChars[rand.Next(0, randomChars.Length)];
-                }//!Falta hacer el hash a la clave y actualizar el usuario con dicha clave
-                var message = new MimeKit.MimeMessage();
-                message.To.Add(new MailboxAddress(perfil.Nombre, perfil.Email));
-                message.From.Add(new MailboxAddress("Sistema", config["SMTPUser"]));
-                message.Subject = "Prueba de Correo desde API";
-                message.Body = new TextPart("html")
-                {
-                    Text = @$"<h1>Hola</h1>
-                     <p>¡Bienvenido, {perfil.Nombre}!</p>",//falta enviar la clave generar (sin hashear)
-                };
-                message.Headers.Add("Encabezado", "Valor");//solo si hace falta
-                MailKit.Net.Smtp.SmtpClient client = new SmtpClient();
-                client.ServerCertificateValidationCallback = (object sender,
-                    System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-                    System.Security.Cryptography.X509Certificates.X509Chain chain,
-                    System.Net.Security.SslPolicyErrors sslPolicyErrors) =>
-                { return true; };
-                client.Connect("smtp.gmail.com", 465, MailKit.Security.SecureSocketOptions.Auto);
-                client.Authenticate(config["SMTPUser"], config["SMTPPass"]);//estas credenciales deben estar en el user secrets
-                await client.SendAsync(message);
-                return Ok(perfil);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
+        // PUT api/<controller>
         [HttpPut("actualizar")]
         public async Task<IActionResult> Actualizar([FromBody] Propietario propietario)
         {
@@ -139,40 +69,6 @@ namespace Inmobiliaria_.Net_Core.Api
                     return Ok(entidad);
                 }
                 return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET api/<controller>/5
-        [HttpPost("email")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetByEmail([FromForm] string email)
-        {
-            try
-            { //método sin autenticar, busca el propietario x email
-                var entidad = await contexto.Propietarios.FirstOrDefaultAsync(x => x.Email == email);
-                //para hacer: si el propietario existe, mandarle un email con un enlace con el token
-                //ese enlace servirá para resetear la contraseña
-                //Dominio sirve para armar el enlace, en local será la ip y en producción será el dominio www...
-                var dominio = environment.IsDevelopment() ? HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() : "www.misitio.com";
-                return entidad != null ? Ok(entidad) : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET api/<controller>/GetAll
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                return Ok(await contexto.Propietarios.ToListAsync());
             }
             catch (Exception ex)
             {
@@ -219,115 +115,6 @@ namespace Inmobiliaria_.Net_Core.Api
                     );
                     return Ok(new JwtSecurityTokenHandler().WriteToken(token));
                 }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromForm] Propietario entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    await contexto.Propietarios.AddAsync(entidad);
-                    contexto.SaveChanges();
-                    return CreatedAtAction(nameof(Get), new { id = entidad.Id }, entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromForm] Propietario entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    entidad.Id = id;
-                    Propietario original = await contexto.Propietarios.FindAsync(id);
-                    if (String.IsNullOrEmpty(entidad.Clave))
-                    {
-                        entidad.Clave = original.Clave;
-                    }
-                    else
-                    {
-                        entidad.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                            password: entidad.Clave,
-                            salt: System.Text.Encoding.ASCII.GetBytes(config["Salt"]),
-                            prf: KeyDerivationPrf.HMACSHA1,
-                            iterationCount: 1000,
-                            numBytesRequested: 256 / 8));
-                    }
-                    contexto.Propietarios.Update(entidad);
-                    await contexto.SaveChangesAsync();
-                    return Ok(entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var p = await contexto.Propietarios.FindAsync(id);
-                    if (p == null)
-                        return NotFound();
-                    contexto.Propietarios.Remove(p);
-                    await contexto.SaveChangesAsync();
-                    return Ok(p);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET: api/Propietarios/test
-        [HttpGet("test")]
-        [AllowAnonymous]
-        public IActionResult Test()
-        {
-            try
-            {
-                return Ok("anduvo");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET: api/Propietarios/test/5
-        [HttpGet("test/{codigo}")]
-        [AllowAnonymous]
-        public IActionResult Code(int codigo)
-        {
-            try
-            {
-                //StatusCodes.Status418ImATeapot //constantes con códigos
-                return StatusCode(codigo, new { Mensaje = "Anduvo", Error = false });
             }
             catch (Exception ex)
             {

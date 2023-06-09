@@ -25,20 +25,6 @@ namespace MvcInmo.Api
             this.contexto = contexto;
         }
 
-        // GET: api/<controller>
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            try
-            {
-                var usuario = User.Identity.Name;
-                return Ok(contexto.PagosApis);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
         // GET api/<controller>/5
         [HttpPost("contrato")]
         public async Task<IActionResult> porContrato([FromBody] ContratoApi contrato)
@@ -47,106 +33,6 @@ namespace MvcInmo.Api
             {
                 var idContrato = contrato.Id;
                 return Ok(contexto.PagosApis.Include(e => e.contrato).Where(e => e.ContratoId == idContrato).Include(e => e.contrato.Inmueble));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Inmueble entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    entidad.PropietarioId = contexto.Propietarios.Single(e => e.Email == User.Identity.Name).Id;//era .IdPropietario
-                    contexto.Inmuebles.Add(entidad);
-                    contexto.SaveChanges();
-                    return CreatedAtAction(nameof(Get), new { id = entidad.Id }, entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Inmueble entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid && contexto.Inmuebles.AsNoTracking().Include(e => e.Duenio).FirstOrDefault(e => e.Id == id && e.Duenio.Email == User.Identity.Name) != null)
-                {
-                    entidad.Id = id;
-                    contexto.Inmuebles.Update(entidad);
-                    contexto.SaveChanges();
-                    return Ok(entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                var entidad = contexto.Inmuebles.Include(e => e.Duenio).FirstOrDefault(e => e.Id == id && e.Duenio.Email == User.Identity.Name);
-                if (entidad != null)
-                {
-                    contexto.Inmuebles.Remove(entidad);
-                    contexto.SaveChanges();
-                    return Ok();
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("BajaLogica/{id}")]
-        public async Task<IActionResult> BajaLogica(int id)
-        {
-            try
-            {
-                var entidad = contexto.Inmuebles.Include(e => e.Duenio).FirstOrDefault(e => e.Id == id && e.Duenio.Email == User.Identity.Name);
-                if (entidad != null)
-                {
-                    entidad.Superficie = -1;//cambiar por estado = 0
-                    contexto.Inmuebles.Update(entidad);
-                    contexto.SaveChanges();
-                    return Ok();
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        //pagos de contrato activo del propietario 
-        [HttpGet("contratos/propietario")]
-        public async Task<IActionResult> pagosDeContratos()
-        {
-            try
-            {
-                var usuario = User.Identity.Name;
-                return Ok(contexto.PagosApis.Include(e => e.contrato).ThenInclude(e => e.Inmueble).ThenInclude(e => e.Duenio).Where(e => (e.contrato.Inmueble.Duenio.Email == usuario) && (e.contrato.FechaFin > DateTime.Now)));
             }
             catch (Exception ex)
             {

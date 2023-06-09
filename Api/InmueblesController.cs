@@ -19,7 +19,6 @@ namespace MvcInmo.Api
     public class InmueblesController : Controller
     {
         private readonly DataContext contexto;
-
         public InmueblesController(DataContext contexto)
         {
             this.contexto = contexto;
@@ -40,112 +39,13 @@ namespace MvcInmo.Api
             }
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            try
-            {
-                var usuario = User.Identity.Name;
-                return Ok(contexto.Inmuebles.Include(e => e.Duenio).Where(e => e.Duenio.Email == usuario).Single(e => e.Id == id));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Inmueble entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    entidad.PropietarioId = contexto.Propietarios.Single(e => e.Email == User.Identity.Name).Id;//era .IdPropietario
-                    contexto.Inmuebles.Add(entidad);
-                    contexto.SaveChanges();
-                    return CreatedAtAction(nameof(Get), new { id = entidad.Id }, entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Inmueble entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid && contexto.Inmuebles.AsNoTracking().Include(e => e.Duenio).FirstOrDefault(e => e.Id == id && e.Duenio.Email == User.Identity.Name) != null)
-                {
-                    entidad.Id = id;
-                    contexto.Inmuebles.Update(entidad);
-                    contexto.SaveChanges();
-                    return Ok(entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                var entidad = contexto.Inmuebles.Include(e => e.Duenio).FirstOrDefault(e => e.Id == id && e.Duenio.Email == User.Identity.Name);
-                if (entidad != null)
-                {
-                    contexto.Inmuebles.Remove(entidad);
-                    contexto.SaveChanges();
-                    return Ok();
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("BajaLogica/{id}")]
-        public async Task<IActionResult> BajaLogica(int id)
-        {
-            try
-            {
-                var entidad = contexto.Inmuebles.Include(e => e.Duenio).FirstOrDefault(e => e.Id == id && e.Duenio.Email == User.Identity.Name);
-                if (entidad != null)
-                {
-                    entidad.Superficie = -1;//cambiar por estado = 0
-                    contexto.Inmuebles.Update(entidad);
-                    contexto.SaveChanges();
-                    return Ok();
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("actualizar")]
+        [HttpPut("actualizar")] ///// este es el metodo para actualizar
         public async Task<IActionResult> Actualizar([FromBody] Inmueble inmueble)
         {
             try
             {
-                var entidad = await contexto.Inmuebles.SingleOrDefaultAsync(x => x.Id == inmueble.Id);
+                var usuario = User.Identity.Name;
+                var entidad = await contexto.Inmuebles.Include(e => e.Duenio).Where(e => e.Duenio.Email == usuario).SingleOrDefaultAsync(x => x.Id == inmueble.Id);
                 if (entidad != null)
                 {
                     entidad.Estado = inmueble.Estado == 1 ? 0 : 1;
